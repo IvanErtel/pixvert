@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(npx create-next-app@latest *)",
+      "Bash(robocopy D:\\\\Ivan\\\\pixvert-app D:\\\\Ivan\\\\Pixvert /E /MOVE /XF IMAGE_CONVERTER_CLAUDE.md)",
+      "Bash(npm install *)",
+      "PowerShell(New-Item *)",
+      "Bash(npm run *)",
+      "Bash(Start-Sleep 5)",
+      "Bash(Invoke-WebRequest -Uri \"http://localhost:3000\" -UseBasicParsing -TimeoutSec 10)",
+      "Bash(Select-Object -ExpandProperty StatusCode)",
+      "PowerShell(Start-Sleep 5; \\(Invoke-WebRequest -Uri \"http://localhost:3000\" -UseBasicParsing -TimeoutSec 10\\).StatusCode)",
+      "PowerShell(\\(Invoke-WebRequest -Uri \"http://localhost:3000\" -UseBasicParsing -TimeoutSec 5\\).StatusCode)"
+    ]
+  }
+}
