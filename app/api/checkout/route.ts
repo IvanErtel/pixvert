@@ -6,7 +6,8 @@ export async function POST(req: NextRequest) {
     const { priceId } = await req.json();
     if (!priceId) return NextResponse.json({ error: 'Missing priceId' }, { status: 400 });
 
-    const baseUrl = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_URL ||
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',

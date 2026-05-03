@@ -11,7 +11,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Customer not found' }, { status: 404 });
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_URL ||
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
     const session = await stripe.billingPortal.sessions.create({
       customer: customers.data[0].id,
