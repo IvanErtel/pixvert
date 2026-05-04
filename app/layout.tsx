@@ -21,6 +21,9 @@ export const metadata: Metadata = {
     description: "Free, fast, and private. Convert images between PNG, JPG, WebP formats. 100% local processing.",
     type: "website",
   },
+  verification: {
+    google: "0al6DrjUKZNRWFRY95IGj3q-enUoNyrs9Zx5Db6Scb0",
+  },
 };
 
 export default function RootLayout({
