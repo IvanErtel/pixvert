@@ -162,9 +162,14 @@ export default function Converter() {
               {t('free_counter', { remaining, total: FREE_DAILY_LIMIT })}
             </span>
           )}
-          <a href="/pricing" className="px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-90 transition-opacity whitespace-nowrap">
-            🚀 {t('upgrade_cta')}
-          </a>
+          <div className="flex flex-col items-center sm:items-end gap-1.5">
+            <a href="/pricing" className="px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-90 transition-opacity whitespace-nowrap">
+              🚀 {t('upgrade_cta')}
+            </a>
+            <a href="/activate" className="text-xs text-slate-400 hover:text-[#6366F1] transition-colors">
+              ¿Ya tienes Pro? Actívalo aquí
+            </a>
+          </div>
         </div>
       )}
     </div>

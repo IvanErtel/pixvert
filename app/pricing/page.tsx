@@ -121,6 +121,13 @@ export default function PricingPage() {
         )}
       </div>
 
+      <p className="text-sm text-slate-400 mb-6">
+        ¿Ya tienes una suscripción activa?{' '}
+        <a href="/activate" className="text-[#6366F1] hover:underline font-medium">
+          Activa tu acceso Pro aquí
+        </a>
+      </p>
+
       <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
         <PlanCard
           name="Free"

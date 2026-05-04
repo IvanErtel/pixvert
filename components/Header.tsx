@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
 import { useTheme } from './ThemeProvider';
 import { useI18n, Locale } from '@/lib/i18n';
+import { useSubscription } from '@/lib/subscription';
 
 const LOCALES: { code: Locale; label: string; flag: string }[] = [
   { code: 'en', label: 'English', flag: '🇬🇧' },
@@ -20,6 +21,7 @@ const LOCALES: { code: Locale; label: string; flag: string }[] = [
 export default function Header() {
   const { effectiveTheme, setTheme } = useTheme();
   const { locale, setLocale, t } = useI18n();
+  const { isPro, loading } = useSubscription();
   const [langOpen, setLangOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -53,6 +55,21 @@ export default function Header() {
           >
             {t('pricing')}
           </Link>
+
+          {!loading && (
+            isPro ? (
+              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white">
+                ✨ Pro
+              </span>
+            ) : (
+              <Link
+                href="/activate"
+                className="text-sm text-slate-500 dark:text-slate-400 hover:text-[#6366F1] transition-colors"
+              >
+                ¿Ya eres Pro?
+              </Link>
+            )
+          )}
 
           {/* Language selector */}
           <div className="relative" ref={dropdownRef}>
