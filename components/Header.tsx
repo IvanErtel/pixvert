@@ -58,9 +58,9 @@ export default function Header() {
 
           {!loading && (
             isPro ? (
-              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white">
+              <Link href="/pricing" className="text-xs font-semibold px-2.5 py-1 rounded-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:opacity-90 transition-opacity">
                 ✨ Pro
-              </span>
+              </Link>
             ) : (
               <Link
                 href="/activate"
