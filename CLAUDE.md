@@ -92,13 +92,21 @@ public/
 - Para agregar texto nuevo: añadir la clave en todos los archivos de `locales/`
 
 ## SEO
-- 18 rutas estáticas en `/convert/[slug]` generadas con `generateStaticParams`
-- Slugs: `png-to-webp`, `jpg-to-avif`, etc. — definidos en `lib/seo-conversions.ts`
+- 33 rutas estáticas en `/convert/[slug]` generadas con `generateStaticParams`
+- Slugs definidos en `lib/seo-conversions.ts`
+- Cubre: PNG, JPG, WebP, AVIF, BMP, GIF, TIFF, ICO como destinos
+- Para agregar nuevas rutas: añadir entrada en `SEO_CONVERSIONS` y benefit en `ConversionBenefits`
 
 ## Conversión de imágenes
 - Web Worker (`public/converter.worker.js`) con `OffscreenCanvas` — fallback a main thread si no hay soporte
-- Formatos: PNG, JPG, WebP, AVIF
+- **Formatos nativos** (vía canvas.toBlob): PNG, JPG, WebP, AVIF → usan worker pool
+- **Formatos custom** (encoders propios en `lib/converter.ts`): BMP, GIF, TIFF, ICO → siempre en main thread
+  - **BMP**: encoder puro JS (sin librería), 24bpp, alpha compuesto sobre blanco
+  - **GIF**: usa `gif-encoder-2` (dynamic import), reduce a paleta de 256 colores
+  - **TIFF**: encoder puro JS, TIFF sin compresión, RGB 8bpp
+  - **ICO**: encoder puro JS, genera 16×16 + 32×32 + 48×48 px con PNG embebido
 - AVIF: detectado en runtime con `isAvifSupported()` en `lib/formats.ts`
+- Tipos para `gif-encoder-2` en `types/gif-encoder-2.d.ts`
 
 ## Límites free tier
 - 10 conversiones/día en localStorage (`img_converter_daily: { count, date }`)

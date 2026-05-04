@@ -94,24 +94,45 @@ export default async function ConvertPage({ params }: Props) {
 
 function ConversionBenefits({ from, to }: { from: string; to: string }) {
   const benefits: Record<string, string> = {
-    'png-webp': 'WebP files are typically 25–35% smaller than PNG with no visible quality loss — ideal for web use.',
-    'jpg-webp': 'WebP offers better compression than JPG at the same quality, reducing file sizes by up to 30%.',
-    'webp-png': 'PNG is lossless and widely supported. Convert from WebP when you need maximum compatibility.',
-    'webp-jpg': 'JPG has near-universal support across apps and devices — perfect when WebP isn\'t accepted.',
-    'png-jpg':  'JPG files are much smaller than PNG for photos. Use when file size matters and you don\'t need transparency.',
-    'jpg-png':  'PNG preserves full quality with no compression artifacts. Convert when you need lossless editing.',
-    'bmp-webp': 'BMP files are uncompressed and huge. WebP reduces them by up to 90% with excellent quality.',
-    'bmp-jpg':  'Shrink oversized BMP files into compact JPGs — much faster to share and store.',
-    'bmp-png':  'Get a lossless, compressed version of your BMP — smaller file, same image quality.',
-    'gif-webp': 'WebP supports animation and is up to 64% smaller than GIF. The modern alternative.',
-    'gif-png':  'Convert GIF frames to static PNG for better quality single images.',
-    'gif-jpg':  'Turn GIF stills into compact JPGs — better quality, smaller size.',
-    'avif-png': 'PNG offers maximum compatibility for your AVIF images across all apps.',
-    'avif-jpg': 'Convert AVIF to JPG for universal compatibility on older software and devices.',
-    'avif-webp':'WebP is broadly supported and nearly as efficient as AVIF — a safe middle ground.',
-    'png-avif': 'AVIF achieves 50% smaller files than PNG at equivalent quality — the next-gen format.',
-    'jpg-avif': 'AVIF compresses photos significantly better than JPG with less visible quality loss.',
-    'webp-avif':'AVIF pushes compression further — smaller files, same great quality.',
+    // WebP
+    'png-webp':  'WebP files are typically 25–35% smaller than PNG with no visible quality loss — ideal for web use.',
+    'jpg-webp':  'WebP offers better compression than JPG at the same quality, reducing file sizes by up to 30%.',
+    'webp-png':  'PNG is lossless and widely supported. Convert from WebP when you need maximum compatibility.',
+    'webp-jpg':  'JPG has near-universal support across apps and devices — perfect when WebP isn\'t accepted.',
+    // JPG / PNG
+    'png-jpg':   'JPG files are much smaller than PNG for photos. Use when file size matters and you don\'t need transparency.',
+    'jpg-png':   'PNG preserves full quality with no compression artifacts. Convert when you need lossless editing.',
+    // AVIF
+    'png-avif':  'AVIF achieves 50% smaller files than PNG at equivalent quality — the next-gen format.',
+    'jpg-avif':  'AVIF compresses photos significantly better than JPG with less visible quality loss.',
+    'webp-avif': 'AVIF pushes compression further — smaller files, same great quality.',
+    'avif-png':  'PNG offers maximum compatibility for your AVIF images across all apps.',
+    'avif-jpg':  'Convert AVIF to JPG for universal compatibility on older software and devices.',
+    'avif-webp': 'WebP is broadly supported and nearly as efficient as AVIF — a safe middle ground.',
+    // BMP
+    'bmp-webp':  'BMP files are uncompressed and huge. WebP reduces them by up to 90% with excellent quality.',
+    'bmp-jpg':   'Shrink oversized BMP files into compact JPGs — much faster to share and store.',
+    'bmp-png':   'Get a lossless, compressed version of your BMP — smaller file, same image quality.',
+    'png-bmp':   'BMP is uncompressed and compatible with every Windows application and legacy software.',
+    'jpg-bmp':   'Convert JPG to BMP for use in applications that require raw, uncompressed image data.',
+    'webp-bmp':  'BMP format works everywhere — great for compatibility when WebP isn\'t supported.',
+    // GIF
+    'gif-webp':  'WebP supports animation and is up to 64% smaller than GIF. The modern alternative.',
+    'gif-png':   'Convert GIF frames to static PNG for better quality and transparency support.',
+    'gif-jpg':   'Turn GIF stills into compact JPGs — better quality, smaller size.',
+    'png-gif':   'GIF is perfect for simple graphics, icons, and logos with limited colors.',
+    'jpg-gif':   'Reduce file size and create shareable GIF images from your JPG photos.',
+    'webp-gif':  'GIF has universal support — convert when you need the widest compatibility.',
+    // TIFF
+    'png-tiff':  'TIFF is the standard for print and professional photography — lossless and widely accepted in creative workflows.',
+    'jpg-tiff':  'Convert to TIFF for high-quality printing or professional editing without compression artifacts.',
+    'webp-tiff': 'TIFF is the go-to format for print production, photo editing, and archiving.',
+    'tiff-jpg':  'Convert large TIFF files to compact JPGs for easy sharing and web use.',
+    'tiff-png':  'PNG gives you a lossless, web-ready version of your TIFF — perfect for online use.',
+    'tiff-webp': 'WebP dramatically reduces TIFF file sizes while maintaining excellent quality for the web.',
+    // ICO
+    'png-ico':   'Create a favicon from your PNG — ICO format is required for browser tab icons and desktop shortcuts.',
+    'jpg-ico':   'Turn any JPG into an ICO file. Get sizes 16×16, 32×32 and 48×48 in a single file — ready for any platform.',
   };
 
   const key = `${from}-${to}`;
