@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import JSZip from 'jszip';
 import DropZone from './DropZone';
 import FileList, { FileItem, FileStatus } from './FileList';
@@ -20,7 +20,11 @@ export default function ConverterPreset({ defaultFormat }: ConverterPresetProps)
   const { t } = useI18n();
   const [files, setFiles] = useState<FileItem[]>([]);
   const [isConverting, setIsConverting] = useState(false);
-  const [remaining, setRemaining] = useState(() => getRemainingConversions());
+  const [remaining, setRemaining] = useState(FREE_DAILY_LIMIT);
+
+  useEffect(() => {
+    setRemaining(getRemainingConversions());
+  }, []);
   const objectUrlsRef = useRef<Set<string>>(new Set());
 
   const refreshRemaining = () => setRemaining(getRemainingConversions());

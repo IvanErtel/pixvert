@@ -357,7 +357,12 @@ export async function optimizeImage(
   const format = MIME_TO_FORMAT[file.type];
   if (!format) throw new Error(`Cannot optimize format: ${file.type}`);
   const quality = format === 'png' ? undefined : 0.75;
-  return convertImage(file, format, onProgress, quality);
+  const blob = await convertImage(file, format, onProgress, quality);
+  // Never return a larger file than the original
+  if (blob.size >= file.size) {
+    return new Blob([await file.arrayBuffer()], { type: file.type });
+  }
+  return blob;
 }
 
 export async function convertImage(
