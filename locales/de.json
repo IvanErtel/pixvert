@@ -40,5 +40,8 @@
   "converted_size": "Konvertiert",
   "add_more_files": "Weitere Dateien hinzufügen",
   "files_rejected": "{count} Datei(en) abgelehnt — keine gültigen Bilder",
-  "size_limit": "Datei zu groß (max 5 MB)"
+  "size_limit": "Datei zu groß (max 5 MB)",
+  "compress_all": "Alle komprimieren",
+  "mode_convert": "Konvertieren",
+  "mode_optimize": "Optimieren"
 }

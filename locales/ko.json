@@ -40,5 +40,8 @@
   "converted_size": "변환됨",
   "add_more_files": "파일 추가",
   "files_rejected": "{count}개 파일 거부됨 — 유효한 이미지가 아닙니다",
-  "size_limit": "파일이 너무 큽니다 (최대 5MB)"
+  "size_limit": "파일이 너무 큽니다 (최대 5MB)",
+  "compress_all": "모두 압축",
+  "mode_convert": "변환",
+  "mode_optimize": "최적화"
 }

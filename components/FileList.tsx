@@ -13,6 +13,7 @@ export interface FileItem {
   progress: number;
   convertedBlob?: Blob;
   convertedSize?: number;
+  outputFilename?: string;
   error?: string;
 }
 
@@ -63,7 +64,7 @@ export default function FileList({ files, targetFormat, onRemove, onDownload }: 
     <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
       <ul className="divide-y divide-slate-100 dark:divide-slate-800">
         {files.map((item) => {
-          const outputName = getOutputFilename(item.file.name, targetFormat);
+          const outputName = item.outputFilename ?? getOutputFilename(item.file.name, targetFormat);
           return (
             <li key={item.id} className="flex items-center gap-3 p-3 bg-white dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
               {/* Thumbnail */}
@@ -94,6 +95,11 @@ export default function FileList({ files, targetFormat, onRemove, onDownload }: 
                     <>
                       <span>→</span>
                       <span className="text-[#10B981] font-medium">{formatBytes(item.convertedSize)}</span>
+                      {item.convertedSize < item.file.size && (
+                        <span className="text-[#10B981] font-semibold bg-emerald-50 dark:bg-emerald-900/20 px-1 rounded text-[10px]">
+                          -{Math.round((1 - item.convertedSize / item.file.size) * 100)}%
+                        </span>
+                      )}
                     </>
                   )}
                   {item.status === 'converting' && (

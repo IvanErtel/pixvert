@@ -40,5 +40,8 @@
   "converted_size": "转换后",
   "add_more_files": "添加更多文件",
   "files_rejected": "{count} 个文件被拒绝 — 不是有效图片",
-  "size_limit": "文件太大（最大5MB）"
+  "size_limit": "文件太大（最大5MB）",
+  "compress_all": "压缩全部",
+  "mode_convert": "转换",
+  "mode_optimize": "优化"
 }

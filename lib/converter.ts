@@ -343,10 +343,28 @@ async function encodeIco(imageData: ImageData): Promise<Blob> {
 
 // ── Public API ───────────────────────────────────────────────────────────────
 
+const MIME_TO_FORMAT: Record<string, ImageFormat> = {
+  'image/jpeg': 'jpg',
+  'image/png':  'png',
+  'image/webp': 'webp',
+  'image/avif': 'avif',
+};
+
+export async function optimizeImage(
+  file: File,
+  onProgress?: (progress: number) => void
+): Promise<Blob> {
+  const format = MIME_TO_FORMAT[file.type];
+  if (!format) throw new Error(`Cannot optimize format: ${file.type}`);
+  const quality = format === 'png' ? undefined : 0.75;
+  return convertImage(file, format, onProgress, quality);
+}
+
 export async function convertImage(
   file: File,
   targetFormat: ImageFormat,
-  onProgress?: (progress: number) => void
+  onProgress?: (progress: number) => void,
+  qualityOverride?: number
 ): Promise<Blob> {
   // Custom formats: skip worker, use specialized main-thread encoders
   if (!NATIVE_FORMATS.has(targetFormat)) {
@@ -370,7 +388,7 @@ export async function convertImage(
 
   // Native formats: worker pool with main-thread fallback
   const { mimeType } = SUPPORTED_FORMATS[targetFormat];
-  const quality = targetFormat === 'png' ? undefined : 0.92;
+  const quality = qualityOverride ?? (targetFormat === 'png' ? undefined : 0.92);
 
   if (workerReady === null) workerReady = workerSupported();
 

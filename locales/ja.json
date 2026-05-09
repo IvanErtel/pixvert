@@ -40,5 +40,8 @@
   "converted_size": "変換後",
   "add_more_files": "ファイルを追加",
   "files_rejected": "{count}件のファイルが拒否されました（有効な画像ではありません）",
-  "size_limit": "ファイルが大きすぎます（最大5MB）"
+  "size_limit": "ファイルが大きすぎます（最大5MB）",
+  "compress_all": "すべて圧縮",
+  "mode_convert": "変換",
+  "mode_optimize": "最適化"
 }

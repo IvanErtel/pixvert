@@ -55,3 +55,19 @@ export function getConversionBySlug(slug: string): ConversionRoute | undefined {
 export function formatLabel(ext: string): string {
   return ext.toUpperCase();
 }
+
+export interface CompressRoute {
+  format: string;
+  label: string;
+}
+
+export const SEO_COMPRESS: CompressRoute[] = [
+  { format: 'image', label: 'Image' },
+  { format: 'jpg',   label: 'JPG'   },
+  { format: 'png',   label: 'PNG'   },
+  { format: 'webp',  label: 'WebP'  },
+];
+
+export function getCompressByFormat(format: string): CompressRoute | undefined {
+  return SEO_COMPRESS.find((c) => c.format === format);
+}

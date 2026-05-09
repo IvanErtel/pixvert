@@ -6,7 +6,7 @@ import DropZone from './DropZone';
 import FileList, { FileItem, FileStatus } from './FileList';
 import FormatSelector from './FormatSelector';
 import { ImageFormat, getOutputFilename } from '@/lib/formats';
-import { convertImage } from '@/lib/converter';
+import { convertImage, optimizeImage } from '@/lib/converter';
 import { getRemainingConversions, incrementDailyCount, hasReachedLimit, FREE_DAILY_LIMIT } from '@/lib/limits';
 import { useI18n } from '@/lib/i18n';
 import { useSubscription } from '@/lib/subscription';
@@ -19,6 +19,7 @@ export default function Converter() {
   const { isPro, plan } = useSubscription();
   const [files, setFiles] = useState<FileItem[]>([]);
   const [targetFormat, setTargetFormat] = useState<ImageFormat>('webp');
+  const [mode, setMode] = useState<'convert' | 'optimize'>('convert');
   const [isConverting, setIsConverting] = useState(false);
   const [remaining, setRemaining] = useState(FREE_DAILY_LIMIT); // safe SSR default
   const objectUrlsRef = useRef<Set<string>>(new Set());
@@ -61,9 +62,17 @@ export default function Converter() {
       if (!isPro && hasReachedLimit()) break;
       updateFile(item.id, { status: 'converting', progress: 0 });
       try {
-        const blob = await convertImage(item.file, targetFormat, (p) => updateFile(item.id, { progress: p }));
+        const blob = mode === 'optimize'
+          ? await optimizeImage(item.file, (p) => updateFile(item.id, { progress: p }))
+          : await convertImage(item.file, targetFormat, (p) => updateFile(item.id, { progress: p }));
         if (!isPro) { incrementDailyCount(); refreshRemaining(); }
-        updateFile(item.id, { status: 'done', progress: 100, convertedBlob: blob, convertedSize: blob.size });
+        updateFile(item.id, {
+          status: 'done',
+          progress: 100,
+          convertedBlob: blob,
+          convertedSize: blob.size,
+          ...(mode === 'optimize' && { outputFilename: item.file.name }),
+        });
       } catch {
         updateFile(item.id, { status: 'error', error: 'Conversion failed' });
       }
@@ -76,7 +85,7 @@ export default function Converter() {
     const url = URL.createObjectURL(item.convertedBlob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = getOutputFilename(item.file.name, targetFormat);
+    a.download = mode === 'optimize' ? item.file.name : getOutputFilename(item.file.name, targetFormat);
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -85,7 +94,12 @@ export default function Converter() {
     const done = files.filter((f) => f.status === 'done' && f.convertedBlob);
     if (done.length === 0) return;
     const zip = new JSZip();
-    done.forEach((item) => { if (item.convertedBlob) zip.file(getOutputFilename(item.file.name, targetFormat), item.convertedBlob); });
+    done.forEach((item) => {
+      if (item.convertedBlob) {
+        const name = mode === 'optimize' ? item.file.name : getOutputFilename(item.file.name, targetFormat);
+        zip.file(name, item.convertedBlob);
+      }
+    });
     const zipBlob = await zip.generateAsync({ type: 'blob' });
     const url = URL.createObjectURL(zipBlob);
     const a = document.createElement('a');
@@ -99,6 +113,35 @@ export default function Converter() {
 
   return (
     <div className="flex flex-col gap-6">
+      {/* Mode toggle */}
+      <div className="flex items-center justify-center">
+        <div className="flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1 gap-1">
+          <button
+            onClick={() => setMode('convert')}
+            className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-150 ${
+              mode === 'convert'
+                ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-50 shadow-sm'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+            }`}
+          >
+            {t('mode_convert')}
+          </button>
+          <button
+            onClick={() => setMode('optimize')}
+            className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-150 flex items-center gap-1.5 ${
+              mode === 'optimize'
+                ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-50 shadow-sm'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+            }`}
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+            </svg>
+            {t('mode_optimize')}
+          </button>
+        </div>
+      </div>
+
       {/* Privacy badge */}
       <div className="flex items-center justify-center gap-2 text-sm text-[#10B981] bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-full px-4 py-1.5 self-center">
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -111,7 +154,16 @@ export default function Converter() {
 
       {files.length > 0 && (
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <FormatSelector value={targetFormat} onChange={setTargetFormat} />
+          {mode === 'convert' ? (
+            <FormatSelector value={targetFormat} onChange={setTargetFormat} />
+          ) : (
+            <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+              <svg className="w-4 h-4 text-[#10B981]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Keeps original format · reduces file size ~40–60%
+            </div>
+          )}
           <button
             onClick={handleConvertAll}
             disabled={isConverting || pendingCount === 0 || limitReached}
@@ -123,7 +175,7 @@ export default function Converter() {
           >
             {isConverting ? (
               <><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>{t('converting')}</>
-            ) : t('convert_all')}
+            ) : mode === 'optimize' ? t('compress_all') : t('convert_all')}
           </button>
         </div>
       )}

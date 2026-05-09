@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { SEO_CONVERSIONS } from '@/lib/seo-conversions';
+import { SEO_CONVERSIONS, SEO_COMPRESS } from '@/lib/seo-conversions';
 
 const BASE_URL = 'https://pixvert-one.vercel.app';
 
@@ -16,5 +16,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...conversionRoutes];
+  const compressRoutes: MetadataRoute.Sitemap = SEO_COMPRESS.map((c) => ({
+    url: `${BASE_URL}/compress/${c.format}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.8,
+  }));
+
+  return [...staticRoutes, ...conversionRoutes, ...compressRoutes];
 }
