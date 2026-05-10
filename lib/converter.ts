@@ -63,7 +63,8 @@ async function convertViaWorker(
   file: File,
   mimeType: string,
   quality: number | undefined,
-  onProgress?: (p: number) => void
+  onProgress?: (p: number) => void,
+  opts?: ConvertOptions
 ): Promise<Blob> {
   const pool = getWorkers();
   const worker = pool[workerIndex % pool.length];
@@ -77,7 +78,12 @@ async function convertViaWorker(
   return new Promise<Blob>((resolve, reject) => {
     pending.set(id, { resolve, reject, onProgress, mimeType });
     onProgress?.(50);
-    worker.postMessage({ id, buffer, mimeType, quality }, [buffer]);
+    worker.postMessage({
+      id, buffer, mimeType, quality,
+      targetWidth: opts?.targetWidth ?? 0,
+      targetHeight: opts?.targetHeight ?? 0,
+      keepAspectRatio: opts?.keepAspectRatio ?? true,
+    }, [buffer]);
   });
 }
 
@@ -87,7 +93,8 @@ function convertMainThread(
   file: File,
   mimeType: string,
   quality: number | undefined,
-  onProgress?: (p: number) => void
+  onProgress?: (p: number) => void,
+  opts?: ConvertOptions
 ): Promise<Blob> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -96,12 +103,13 @@ function convertMainThread(
     img.onload = () => {
       try {
         onProgress?.(30);
+        const { w, h } = calcFinalDimensions(img.naturalWidth, img.naturalHeight, opts ?? {});
         const canvas = document.createElement('canvas');
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
+        canvas.width = w;
+        canvas.height = h;
         const ctx = canvas.getContext('2d');
         if (!ctx) throw new Error('Could not get canvas context');
-        ctx.drawImage(img, 0, 0);
+        ctx.drawImage(img, 0, 0, w, h);
         onProgress?.(70);
         URL.revokeObjectURL(objectUrl);
         canvas.toBlob(
@@ -132,7 +140,8 @@ function convertMainThread(
 
 async function getCanvasFromFile(
   file: File,
-  onProgress?: (p: number) => void
+  onProgress?: (p: number) => void,
+  opts?: ConvertOptions
 ): Promise<{ canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D; imageData: ImageData }> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -140,13 +149,14 @@ async function getCanvasFromFile(
 
     img.onload = () => {
       onProgress?.(30);
+      const { w, h } = calcFinalDimensions(img.naturalWidth, img.naturalHeight, opts ?? {});
       const canvas = document.createElement('canvas');
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
+      canvas.width = w;
+      canvas.height = h;
       const ctx = canvas.getContext('2d');
       if (!ctx) { URL.revokeObjectURL(url); reject(new Error('No canvas context')); return; }
-      ctx.drawImage(img, 0, 0);
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, w, h);
+      const imageData = ctx.getImageData(0, 0, w, h);
       URL.revokeObjectURL(url);
       onProgress?.(60);
       resolve({ canvas, ctx, imageData });
@@ -343,6 +353,29 @@ async function encodeIco(imageData: ImageData): Promise<Blob> {
 
 // ── Public API ───────────────────────────────────────────────────────────────
 
+export interface ConvertOptions {
+  quality?: number;         // 0–1 scale; undefined = format default
+  targetWidth?: number;     // px; 0 or undefined = original
+  targetHeight?: number;    // px; 0 or undefined = original
+  keepAspectRatio?: boolean; // default true
+}
+
+function calcFinalDimensions(
+  origW: number,
+  origH: number,
+  opts: ConvertOptions
+): { w: number; h: number } {
+  const { targetWidth: tw, targetHeight: th, keepAspectRatio: lock = true } = opts;
+  if (!tw && !th) return { w: origW, h: origH };
+  if (lock) {
+    if (tw && !th) return { w: tw, h: Math.round(origH * tw / origW) };
+    if (th && !tw) return { w: Math.round(origW * th / origH), h: th };
+    const scale = Math.min(tw! / origW, th! / origH);
+    return { w: Math.round(origW * scale), h: Math.round(origH * scale) };
+  }
+  return { w: tw || origW, h: th || origH };
+}
+
 const MIME_TO_FORMAT: Record<string, ImageFormat> = {
   'image/jpeg': 'jpg',
   'image/png':  'png',
@@ -352,12 +385,13 @@ const MIME_TO_FORMAT: Record<string, ImageFormat> = {
 
 export async function optimizeImage(
   file: File,
-  onProgress?: (progress: number) => void
+  onProgress?: (progress: number) => void,
+  opts?: Pick<ConvertOptions, 'targetWidth' | 'targetHeight' | 'keepAspectRatio'>
 ): Promise<Blob> {
   const format = MIME_TO_FORMAT[file.type];
   if (!format) throw new Error(`Cannot optimize format: ${file.type}`);
   const quality = format === 'png' ? undefined : 0.75;
-  const blob = await convertImage(file, format, onProgress, quality);
+  const blob = await convertImage(file, format, onProgress, { quality, ...opts });
   // Never return a larger file than the original
   if (blob.size >= file.size) {
     return new Blob([await file.arrayBuffer()], { type: file.type });
@@ -369,12 +403,12 @@ export async function convertImage(
   file: File,
   targetFormat: ImageFormat,
   onProgress?: (progress: number) => void,
-  qualityOverride?: number
+  opts?: ConvertOptions
 ): Promise<Blob> {
   // Custom formats: skip worker, use specialized main-thread encoders
   if (!NATIVE_FORMATS.has(targetFormat)) {
     onProgress?.(10);
-    const { canvas, ctx, imageData } = await getCanvasFromFile(file, onProgress);
+    const { canvas, ctx, imageData } = await getCanvasFromFile(file, onProgress, opts);
     onProgress?.(70);
 
     let blob: Blob;
@@ -385,7 +419,6 @@ export async function convertImage(
       case 'ico':  blob = await encodeIco(imageData); break;
       default: throw new Error(`Unsupported format: ${targetFormat}`);
     }
-    // suppress unused warning
     void canvas;
     onProgress?.(100);
     return blob;
@@ -393,18 +426,18 @@ export async function convertImage(
 
   // Native formats: worker pool with main-thread fallback
   const { mimeType } = SUPPORTED_FORMATS[targetFormat];
-  const quality = qualityOverride ?? (targetFormat === 'png' ? undefined : 0.92);
+  const quality = opts?.quality ?? (targetFormat === 'png' ? undefined : 0.92);
 
   if (workerReady === null) workerReady = workerSupported();
 
   if (workerReady) {
     try {
-      return await convertViaWorker(file, mimeType, quality, onProgress);
+      return await convertViaWorker(file, mimeType, quality, onProgress, opts);
     } catch {
       workerReady = false;
       workers = [];
     }
   }
 
-  return convertMainThread(file, mimeType, quality, onProgress);
+  return convertMainThread(file, mimeType, quality, onProgress, opts);
 }

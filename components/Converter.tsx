@@ -5,8 +5,9 @@ import JSZip from 'jszip';
 import DropZone from './DropZone';
 import FileList, { FileItem, FileStatus } from './FileList';
 import FormatSelector from './FormatSelector';
+import OptionsPanel from './OptionsPanel';
 import { ImageFormat, getOutputFilename } from '@/lib/formats';
-import { convertImage, optimizeImage } from '@/lib/converter';
+import { convertImage, optimizeImage, ConvertOptions } from '@/lib/converter';
 import { getRemainingConversions, incrementDailyCount, hasReachedLimit, FREE_DAILY_LIMIT } from '@/lib/limits';
 import { useI18n } from '@/lib/i18n';
 import { useSubscription } from '@/lib/subscription';
@@ -20,9 +21,14 @@ export default function Converter() {
   const [files, setFiles] = useState<FileItem[]>([]);
   const [targetFormat, setTargetFormat] = useState<ImageFormat>('webp');
   const [mode, setMode] = useState<'convert' | 'optimize'>('convert');
+  const [quality, setQuality] = useState(85);
+  const [resizeW, setResizeW] = useState('');
+  const [resizeH, setResizeH] = useState('');
+  const [lockRatio, setLockRatio] = useState(true);
   const [isConverting, setIsConverting] = useState(false);
   const [remaining, setRemaining] = useState(FREE_DAILY_LIMIT); // safe SSR default
   const objectUrlsRef = useRef<Set<string>>(new Set());
+  const imageRatioRef = useRef<number | null>(null); // W/H ratio of first file, for lock auto-calc
 
   // Read localStorage only after hydration to avoid SSR mismatch
   useEffect(() => {
@@ -37,6 +43,16 @@ export default function Converter() {
       objectUrlsRef.current.add(preview);
       return { id: nextId(), file, preview, status: 'pending' as FileStatus, progress: 0 };
     });
+    // Detect ratio from first ever file added for lock auto-calculation
+    if (imageRatioRef.current === null && items.length > 0) {
+      const img = new Image();
+      img.onload = () => {
+        if (img.naturalWidth && img.naturalHeight) {
+          imageRatioRef.current = img.naturalWidth / img.naturalHeight;
+        }
+      };
+      img.src = items[0].preview;
+    }
     setFiles((prev) => [...prev, ...items]);
   }, []);
 
@@ -44,8 +60,37 @@ export default function Converter() {
     setFiles((prev) => {
       const item = prev.find((f) => f.id === id);
       if (item) { objectUrlsRef.current.delete(item.preview); URL.revokeObjectURL(item.preview); }
-      return prev.filter((f) => f.id !== id);
+      const next = prev.filter((f) => f.id !== id);
+      if (next.length === 0) imageRatioRef.current = null; // reset ratio when all files removed
+      return next;
     });
+  }, []);
+
+  const handleResizeWChange = useCallback((val: string) => {
+    setResizeW(val);
+    if (!val) { setResizeH(''); return; }
+    if (lockRatio && imageRatioRef.current) {
+      setResizeH(String(Math.round(Number(val) / imageRatioRef.current)));
+    }
+  }, [lockRatio]);
+
+  const handleResizeHChange = useCallback((val: string) => {
+    setResizeH(val);
+    if (!val) { setResizeW(''); return; }
+    if (lockRatio && imageRatioRef.current) {
+      setResizeW(String(Math.round(Number(val) * imageRatioRef.current)));
+    }
+  }, [lockRatio]);
+
+  const handleResizeReset = useCallback(() => {
+    setResizeW('');
+    setResizeH('');
+  }, []);
+
+  const handlePresetSelect = useCallback((w: number, h: number) => {
+    setResizeW(String(w));
+    setResizeH(String(h));
+    setLockRatio(false); // presets define exact dimensions
   }, []);
 
   const updateFile = (id: string, updates: Partial<FileItem>) =>
@@ -62,9 +107,17 @@ export default function Converter() {
       if (!isPro && hasReachedLimit()) break;
       updateFile(item.id, { status: 'converting', progress: 0 });
       try {
+        const resizeOpts: Pick<ConvertOptions, 'targetWidth' | 'targetHeight' | 'keepAspectRatio'> = {
+          targetWidth: resizeW ? Number(resizeW) : undefined,
+          targetHeight: resizeH ? Number(resizeH) : undefined,
+          keepAspectRatio: lockRatio,
+        };
         const blob = mode === 'optimize'
-          ? await optimizeImage(item.file, (p) => updateFile(item.id, { progress: p }))
-          : await convertImage(item.file, targetFormat, (p) => updateFile(item.id, { progress: p }));
+          ? await optimizeImage(item.file, (p) => updateFile(item.id, { progress: p }), resizeOpts)
+          : await convertImage(item.file, targetFormat, (p) => updateFile(item.id, { progress: p }), {
+              quality: quality / 100,
+              ...resizeOpts,
+            });
         if (!isPro) { incrementDailyCount(); refreshRemaining(); }
         updateFile(item.id, {
           status: 'done',
@@ -178,6 +231,23 @@ export default function Converter() {
             ) : mode === 'optimize' ? t('compress_all') : t('convert_all')}
           </button>
         </div>
+      )}
+
+      {files.length > 0 && (
+        <OptionsPanel
+          targetFormat={targetFormat}
+          showQuality={mode === 'convert'}
+          quality={quality}
+          onQualityChange={setQuality}
+          resizeW={resizeW}
+          resizeH={resizeH}
+          onResizeWChange={handleResizeWChange}
+          onResizeHChange={handleResizeHChange}
+          lockRatio={lockRatio}
+          onLockRatioChange={setLockRatio}
+          onResizeReset={handleResizeReset}
+          onPresetSelect={handlePresetSelect}
+        />
       )}
 
       <FileList files={files} targetFormat={targetFormat} onRemove={handleRemove} onDownload={handleDownload} />
