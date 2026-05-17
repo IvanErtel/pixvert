@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 import ThemeProvider from "@/components/ThemeProvider";
 import I18nProvider from "@/components/I18nProvider";
 import SubscriptionProvider from "@/components/SubscriptionProvider";
@@ -43,6 +44,7 @@ export default function RootLayout({
               </main>
               <Footer />
               <AdBanner />
+              <Analytics />
             </I18nProvider>
           </SubscriptionProvider>
         </ThemeProvider>

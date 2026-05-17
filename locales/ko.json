@@ -2,7 +2,7 @@
   "hero_title": "이미지를 즉시 변환",
   "hero_subtitle": "무료, 빠르고 프라이빗합니다. 파일이 기기를 벗어나지 않습니다.",
   "drop_text": "여기에 이미지를 드롭하거나 클릭하여 탐색",
-  "drop_formats": "PNG, JPG, WebP, GIF, BMP",
+  "drop_formats": "PNG, JPG, WebP, GIF, BMP, HEIC",
   "convert_to": "변환 형식",
   "convert_all": "모두 변환",
   "quality": "품질",

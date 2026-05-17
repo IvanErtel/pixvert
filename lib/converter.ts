@@ -1,4 +1,4 @@
-import { ImageFormat, SUPPORTED_FORMATS } from './formats';
+import { ImageFormat, SUPPORTED_FORMATS, isHeicFile } from './formats';
 
 // ── Worker pool ──────────────────────────────────────────────────────────────
 
@@ -351,6 +351,17 @@ async function encodeIco(imageData: ImageData): Promise<Blob> {
   return new Blob([buf], { type: 'image/x-icon' });
 }
 
+// ── HEIC decoder ─────────────────────────────────────────────────────────────
+
+async function decodeHeic(file: File, onProgress?: (p: number) => void): Promise<File> {
+  const heic2any = (await import('heic2any')).default;
+  onProgress?.(20);
+  const blob = await heic2any({ blob: file, toType: 'image/png', quality: 1 }) as Blob;
+  onProgress?.(60);
+  const name = file.name.replace(/\.(heic|heif)$/i, '.png');
+  return new File([blob], name, { type: 'image/png' });
+}
+
 // ── Public API ───────────────────────────────────────────────────────────────
 
 export interface ConvertOptions {
@@ -388,6 +399,7 @@ export async function optimizeImage(
   onProgress?: (progress: number) => void,
   opts?: Pick<ConvertOptions, 'targetWidth' | 'targetHeight' | 'keepAspectRatio'>
 ): Promise<Blob> {
+  if (isHeicFile(file)) file = await decodeHeic(file, onProgress);
   const format = MIME_TO_FORMAT[file.type];
   if (!format) throw new Error(`Cannot optimize format: ${file.type}`);
   const quality = format === 'png' ? undefined : 0.75;
@@ -405,6 +417,7 @@ export async function convertImage(
   onProgress?: (progress: number) => void,
   opts?: ConvertOptions
 ): Promise<Blob> {
+  if (isHeicFile(file)) file = await decodeHeic(file, onProgress);
   // Custom formats: skip worker, use specialized main-thread encoders
   if (!NATIVE_FORMATS.has(targetFormat)) {
     onProgress?.(10);

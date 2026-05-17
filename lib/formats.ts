@@ -25,9 +25,20 @@ export const ACCEPTED_INPUT_TYPES = [
   'image/bmp',
   'image/avif',
   'image/tiff',
+  'image/heic',
+  'image/heif',
 ];
 
-export const ACCEPTED_EXTENSIONS = '.png,.jpg,.jpeg,.webp,.gif,.bmp,.avif,.tiff,.tif';
+export const HEIC_EXTENSIONS = new Set(['.heic', '.heif']);
+
+// Windows reports HEIC files with empty or generic MIME type — detect by extension
+export function isHeicFile(file: File): boolean {
+  if (file.type === 'image/heic' || file.type === 'image/heif') return true;
+  const ext = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+  return HEIC_EXTENSIONS.has(ext);
+}
+
+export const ACCEPTED_EXTENSIONS = '.png,.jpg,.jpeg,.webp,.gif,.bmp,.avif,.tiff,.tif,.heic,.heif';
 
 export function getOutputFilename(originalName: string, targetFormat: ImageFormat): string {
   const dotIndex = originalName.lastIndexOf('.');

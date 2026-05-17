@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useRef, useState } from 'react';
-import { ACCEPTED_INPUT_TYPES, ACCEPTED_EXTENSIONS } from '@/lib/formats';
+import { ACCEPTED_INPUT_TYPES, ACCEPTED_EXTENSIONS, isHeicFile } from '@/lib/formats';
 import { useI18n } from '@/lib/i18n';
 
 const FREE_MAX_FILE_SIZE = 5 * 1024 * 1024;   // 5 MB
@@ -26,7 +26,7 @@ export default function DropZone({ onFilesAdded, isPro = false }: DropZoneProps)
       const rejected: string[] = [];
 
       files.forEach((file) => {
-        if (!ACCEPTED_INPUT_TYPES.includes(file.type)) {
+        if (!ACCEPTED_INPUT_TYPES.includes(file.type) && !isHeicFile(file)) {
           rejected.push(file.name);
         } else if (file.size > maxSize) {
           rejected.push(file.name);

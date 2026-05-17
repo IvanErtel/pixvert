@@ -2,7 +2,7 @@
   "hero_title": "画像を瞬時に変換",
   "hero_subtitle": "無料・高速・プライベート。ファイルはデバイスから出ません。",
   "drop_text": "ここに画像をドロップまたはクリックして参照",
-  "drop_formats": "PNG, JPG, WebP, GIF, BMP",
+  "drop_formats": "PNG, JPG, WebP, GIF, BMP, HEIC",
   "convert_to": "変換先",
   "convert_all": "すべて変換",
   "quality": "品質",

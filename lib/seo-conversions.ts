@@ -46,6 +46,10 @@ export const SEO_CONVERSIONS: ConversionRoute[] = [
   { from: 'tiff', to: 'jpg',  slug: 'tiff-to-jpg'  },
   { from: 'tiff', to: 'png',  slug: 'tiff-to-png'  },
   { from: 'tiff', to: 'webp', slug: 'tiff-to-webp' },
+  // HEIC conversions (iPhone photos)
+  { from: 'heic', to: 'jpg',  slug: 'heic-to-jpg'  },
+  { from: 'heic', to: 'png',  slug: 'heic-to-png'  },
+  { from: 'heic', to: 'webp', slug: 'heic-to-webp' },
 ];
 
 export function getConversionBySlug(slug: string): ConversionRoute | undefined {

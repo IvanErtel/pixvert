@@ -2,7 +2,7 @@
   "hero_title": "即时转换图片",
   "hero_subtitle": "免费、快速、私密。您的文件永远不会离开您的设备。",
   "drop_text": "将图片拖放至此或点击浏览",
-  "drop_formats": "PNG, JPG, WebP, GIF, BMP",
+  "drop_formats": "PNG, JPG, WebP, GIF, BMP, HEIC",
   "convert_to": "转换为",
   "convert_all": "全部转换",
   "quality": "质量",
