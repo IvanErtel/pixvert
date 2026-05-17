@@ -43,5 +43,6 @@
   "size_limit": "File troppo grande (max 5 MB)",
   "compress_all": "Comprimi tutto",
   "mode_convert": "Converti",
-  "mode_optimize": "Ottimizza"
+  "mode_optimize": "Ottimizza",
+  "exif_stripped": "Metadati EXIF rimossi automaticamente"
 }

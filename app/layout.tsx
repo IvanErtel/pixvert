@@ -16,14 +16,22 @@ const geistSans = Geist({
 
 export const metadata: Metadata = {
   title: "Pixvert — Convert Images Instantly",
-  description: "Free, fast, and private image converter. Convert PNG, JPG, WebP and more. Your files never leave your device.",
+  description: "Free, fast, and private image converter. Convert PNG, JPG, WebP, HEIC and more. Your files never leave your device.",
   openGraph: {
     title: "Pixvert — Convert Images Instantly",
-    description: "Free, fast, and private. Convert images between PNG, JPG, WebP formats. 100% local processing.",
+    description: "Free, fast, and private. Convert images between PNG, JPG, WebP, HEIC formats. 100% local processing.",
     type: "website",
   },
   verification: {
     google: "0al6DrjUKZNRWFRY95IGj3q-enUoNyrs9Zx5Db6Scb0",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Pixvert",
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
   },
 };
 

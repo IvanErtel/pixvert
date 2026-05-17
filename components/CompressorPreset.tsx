@@ -4,6 +4,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import JSZip from 'jszip';
 import DropZone from './DropZone';
 import FileList, { FileItem, FileStatus } from './FileList';
+import BeforeAfterSlider from './BeforeAfterSlider';
 import { optimizeImage } from '@/lib/converter';
 import { getRemainingConversions, incrementDailyCount, hasReachedLimit, FREE_DAILY_LIMIT } from '@/lib/limits';
 import { useI18n } from '@/lib/i18n';
@@ -11,11 +12,26 @@ import { useI18n } from '@/lib/i18n';
 let idCounter = 0;
 function nextId() { return `file-${++idCounter}`; }
 
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+interface SliderItem {
+  beforeSrc: string;
+  afterSrc: string;
+  beforeLabel: string;
+  afterLabel: string;
+}
+
 export default function CompressorPreset() {
   const { t } = useI18n();
   const [files, setFiles] = useState<FileItem[]>([]);
   const [isConverting, setIsConverting] = useState(false);
   const [remaining, setRemaining] = useState(FREE_DAILY_LIMIT);
+  const [sliderItem, setSliderItem] = useState<SliderItem | null>(null);
+  const sliderBlobUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
     setRemaining(getRemainingConversions());
@@ -39,6 +55,7 @@ export default function CompressorPreset() {
       if (item) { objectUrlsRef.current.delete(item.preview); URL.revokeObjectURL(item.preview); }
       return prev.filter((f) => f.id !== id);
     });
+    setSliderItem(null);
   }, []);
 
   const updateFile = (id: string, updates: Partial<FileItem>) =>
@@ -62,6 +79,18 @@ export default function CompressorPreset() {
           convertedSize: blob.size,
           outputFilename: item.file.name,
         });
+        // Show before/after slider for the first successfully compressed file
+        if (!sliderItem) {
+          if (sliderBlobUrlRef.current) URL.revokeObjectURL(sliderBlobUrlRef.current);
+          const afterSrc = URL.createObjectURL(blob);
+          sliderBlobUrlRef.current = afterSrc;
+          setSliderItem({
+            beforeSrc: item.preview,
+            afterSrc,
+            beforeLabel: formatBytes(item.file.size),
+            afterLabel: formatBytes(blob.size),
+          });
+        }
       } catch {
         updateFile(item.id, { status: 'error', error: 'Compression failed' });
       }
@@ -124,6 +153,15 @@ export default function CompressorPreset() {
             ) : t('compress_all')}
           </button>
         </div>
+      )}
+
+      {sliderItem && (
+        <BeforeAfterSlider
+          beforeSrc={sliderItem.beforeSrc}
+          afterSrc={sliderItem.afterSrc}
+          beforeLabel={sliderItem.beforeLabel}
+          afterLabel={sliderItem.afterLabel}
+        />
       )}
 
       <FileList files={files} targetFormat="jpg" onRemove={handleRemove} onDownload={handleDownload} />

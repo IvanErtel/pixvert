@@ -11,6 +11,8 @@ import { convertImage, optimizeImage, ConvertOptions } from '@/lib/converter';
 import { getRemainingConversions, incrementDailyCount, hasReachedLimit, FREE_DAILY_LIMIT } from '@/lib/limits';
 import { useI18n } from '@/lib/i18n';
 import { useSubscription } from '@/lib/subscription';
+import { addToHistory } from '@/lib/history';
+import RecentHistory from './RecentHistory';
 
 let idCounter = 0;
 function nextId() { return `file-${++idCounter}`; }
@@ -126,6 +128,13 @@ export default function Converter() {
           convertedSize: blob.size,
           ...(mode === 'optimize' && { outputFilename: item.file.name }),
         });
+        addToHistory({
+          originalName: item.file.name,
+          outputFormat: mode === 'optimize' ? item.file.name.split('.').pop() ?? '' : targetFormat,
+          originalSize: item.file.size,
+          convertedSize: blob.size,
+          thumbnailDataUrl: item.preview,
+        });
       } catch {
         updateFile(item.id, { status: 'error', error: 'Conversion failed' });
       }
@@ -195,12 +204,20 @@ export default function Converter() {
         </div>
       </div>
 
-      {/* Privacy badge */}
-      <div className="flex items-center justify-center gap-2 text-sm text-[#10B981] bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-full px-4 py-1.5 self-center">
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-        </svg>
-        {t('privacy_note')}
+      {/* Privacy + EXIF badges */}
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        <div className="flex items-center gap-2 text-sm text-[#10B981] bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-full px-4 py-1.5">
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+          </svg>
+          {t('privacy_note')}
+        </div>
+        <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full px-4 py-1.5">
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+          {t('exif_stripped')}
+        </div>
       </div>
 
       <DropZone onFilesAdded={handleFilesAdded} isPro={isPro} />
@@ -247,6 +264,7 @@ export default function Converter() {
           onLockRatioChange={setLockRatio}
           onResizeReset={handleResizeReset}
           onPresetSelect={handlePresetSelect}
+          isPro={isPro}
         />
       )}
 
@@ -294,6 +312,8 @@ export default function Converter() {
           </div>
         </div>
       )}
+
+      <RecentHistory />
     </div>
   );
 }

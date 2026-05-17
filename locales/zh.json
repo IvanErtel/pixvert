@@ -43,5 +43,6 @@
   "size_limit": "文件太大（最大5MB）",
   "compress_all": "压缩全部",
   "mode_convert": "转换",
-  "mode_optimize": "优化"
+  "mode_optimize": "优化",
+  "exif_stripped": "自动删除EXIF元数据"
 }

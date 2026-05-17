@@ -5,13 +5,28 @@ import { useI18n } from '@/lib/i18n';
 
 const LOSSY_FORMATS = new Set<ImageFormat>(['jpg', 'webp', 'avif']);
 
-const PRESETS = [
+const FREE_PRESETS = [
   { label: '1920×1080', w: 1920, h: 1080 },
   { label: '1280×720',  w: 1280, h: 720  },
   { label: '1080×1080', w: 1080, h: 1080 },
   { label: '800×600',   w: 800,  h: 600  },
   { label: '640×480',   w: 640,  h: 480  },
   { label: '400×400',   w: 400,  h: 400  },
+];
+
+const SOCIAL_PRESETS = [
+  { label: 'Instagram Post',   w: 1080, h: 1080 },
+  { label: 'Instagram Story',  w: 1080, h: 1920 },
+  { label: 'Instagram Reel',   w: 1080, h: 1920 },
+  { label: 'Twitter Post',     w: 1200, h: 675  },
+  { label: 'Twitter Header',   w: 1500, h: 500  },
+  { label: 'LinkedIn Post',    w: 1200, h: 627  },
+  { label: 'LinkedIn Cover',   w: 1584, h: 396  },
+  { label: 'YouTube Thumb',    w: 1280, h: 720  },
+  { label: 'Facebook Post',    w: 1200, h: 630  },
+  { label: 'Facebook Cover',   w: 851,  h: 315  },
+  { label: 'Pinterest Pin',    w: 1000, h: 1500 },
+  { label: 'TikTok Video',     w: 1080, h: 1920 },
 ];
 
 interface OptionsPanelProps {
@@ -27,6 +42,7 @@ interface OptionsPanelProps {
   onLockRatioChange: (v: boolean) => void;
   onResizeReset: () => void;
   onPresetSelect: (w: number, h: number) => void;
+  isPro?: boolean;
 }
 
 export default function OptionsPanel({
@@ -42,6 +58,7 @@ export default function OptionsPanel({
   onLockRatioChange,
   onResizeReset,
   onPresetSelect,
+  isPro = false,
 }: OptionsPanelProps) {
   const { t } = useI18n();
   const canShowQuality = showQuality !== false && LOSSY_FORMATS.has(targetFormat);
@@ -78,15 +95,25 @@ export default function OptionsPanel({
         <select
           value=""
           onChange={(e) => {
-            const preset = PRESETS.find((p) => p.label === e.target.value);
+            const all = [...FREE_PRESETS, ...SOCIAL_PRESETS];
+            const preset = all.find((p) => p.label === e.target.value);
             if (preset) onPresetSelect(preset.w, preset.h);
           }}
           className="px-2 py-1 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
         >
           <option value="" disabled>Presets</option>
-          {PRESETS.map((p) => (
-            <option key={p.label} value={p.label}>{p.label}</option>
-          ))}
+          <optgroup label="Common sizes">
+            {FREE_PRESETS.map((p) => (
+              <option key={p.label} value={p.label}>{p.label}</option>
+            ))}
+          </optgroup>
+          <optgroup label={isPro ? 'Social Media' : 'Social Media (Pro)'}>
+            {SOCIAL_PRESETS.map((p) => (
+              <option key={p.label} value={isPro ? p.label : ''} disabled={!isPro}>
+                {isPro ? p.label : `🔒 ${p.label}`}
+              </option>
+            ))}
+          </optgroup>
         </select>
 
         {/* Width input */}
