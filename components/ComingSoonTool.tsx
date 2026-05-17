@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface Benefit {
   icon: string;
@@ -23,6 +23,11 @@ export default function ComingSoonTool({ toolKey, title, subtitle, tags, benefit
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const saved = localStorage.getItem(storageKey);
+    if (saved) { setEmail(saved); setSubmitted(true); }
+  }, [storageKey]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

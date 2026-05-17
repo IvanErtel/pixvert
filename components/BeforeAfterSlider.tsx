@@ -17,7 +17,8 @@ export default function BeforeAfterSlider({ beforeSrc, afterSrc, beforeLabel, af
   const updatePosition = useCallback((clientX: number) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
-    const pct = Math.min(100, Math.max(0, ((clientX - rect.left) / rect.width) * 100));
+    // Keep 2% margin from edges to avoid division errors and hide divider handle
+    const pct = Math.min(98, Math.max(2, ((clientX - rect.left) / rect.width) * 100));
     setPosition(pct);
   }, []);
 
@@ -58,7 +59,7 @@ export default function BeforeAfterSlider({ beforeSrc, afterSrc, beforeLabel, af
         onMouseDown={onMouseDown}
         onTouchStart={onTouchStart}
       >
-        {/* After (compressed) — full width base */}
+        {/* After (compressed) — full width base, sets container height */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={afterSrc}
@@ -67,17 +68,16 @@ export default function BeforeAfterSlider({ beforeSrc, afterSrc, beforeLabel, af
           draggable={false}
         />
 
-        {/* Before (original) — clipped to left side */}
+        {/* Before (original) — same size, clipped to left using clip-path */}
         <div
-          className="absolute inset-0 overflow-hidden"
-          style={{ width: `${position}%` }}
+          className="absolute inset-0"
+          style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={beforeSrc}
             alt="Original"
-            className="w-full h-auto block max-h-72 object-contain"
-            style={{ width: `${10000 / position}%`, maxWidth: 'none' }}
+            className="w-full h-full object-contain"
             draggable={false}
           />
         </div>

@@ -11,7 +11,7 @@ import { convertImage, optimizeImage, ConvertOptions } from '@/lib/converter';
 import { getRemainingConversions, incrementDailyCount, hasReachedLimit, FREE_DAILY_LIMIT } from '@/lib/limits';
 import { useI18n } from '@/lib/i18n';
 import { useSubscription } from '@/lib/subscription';
-import { addToHistory } from '@/lib/history';
+import { addToHistory, createThumbnailDataUrl } from '@/lib/history';
 import RecentHistory from './RecentHistory';
 
 let idCounter = 0;
@@ -128,12 +128,14 @@ export default function Converter() {
           convertedSize: blob.size,
           ...(mode === 'optimize' && { outputFilename: item.file.name }),
         });
-        addToHistory({
-          originalName: item.file.name,
-          outputFormat: mode === 'optimize' ? item.file.name.split('.').pop() ?? '' : targetFormat,
-          originalSize: item.file.size,
-          convertedSize: blob.size,
-          thumbnailDataUrl: item.preview,
+        createThumbnailDataUrl(item.preview).then((thumbnailDataUrl) => {
+          addToHistory({
+            originalName: item.file.name,
+            outputFormat: mode === 'optimize' ? item.file.name.split('.').pop() ?? '' : targetFormat,
+            originalSize: item.file.size,
+            convertedSize: blob.size,
+            thumbnailDataUrl,
+          });
         });
       } catch {
         updateFile(item.id, { status: 'error', error: 'Conversion failed' });

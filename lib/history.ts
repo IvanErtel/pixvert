@@ -1,5 +1,27 @@
 const STORAGE_KEY = 'pixvert_history';
 const MAX_ITEMS = 5;
+const THUMB_SIZE = 64;
+
+export async function createThumbnailDataUrl(src: string): Promise<string> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = THUMB_SIZE;
+      canvas.height = THUMB_SIZE;
+      const ctx = canvas.getContext('2d')!;
+      ctx.fillStyle = '#f1f5f9';
+      ctx.fillRect(0, 0, THUMB_SIZE, THUMB_SIZE);
+      const ratio = Math.min(THUMB_SIZE / img.naturalWidth, THUMB_SIZE / img.naturalHeight);
+      const w = img.naturalWidth * ratio;
+      const h = img.naturalHeight * ratio;
+      ctx.drawImage(img, (THUMB_SIZE - w) / 2, (THUMB_SIZE - h) / 2, w, h);
+      resolve(canvas.toDataURL('image/jpeg', 0.6));
+    };
+    img.onerror = () => resolve('');
+    img.src = src;
+  });
+}
 
 export interface HistoryItem {
   id: string;
