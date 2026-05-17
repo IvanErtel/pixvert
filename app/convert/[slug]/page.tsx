@@ -133,6 +133,42 @@ function ConversionBenefits({ from, to }: { from: string; to: string }) {
     // ICO
     'png-ico':   'Create a favicon from your PNG — ICO format is required for browser tab icons and desktop shortcuts.',
     'jpg-ico':   'Turn any JPG into an ICO file. Get sizes 16×16, 32×32 and 48×48 in a single file — ready for any platform.',
+    'avif-ico':  'Turn your next-gen AVIF into a multi-size ICO favicon — perfect for browser tabs and app icons.',
+    'gif-ico':   'Convert a GIF frame into a multi-size ICO file for use as a favicon or desktop shortcut icon.',
+    'bmp-ico':   'Convert BMP to ICO and get a compact, multi-resolution icon file ready for any platform.',
+    'tiff-ico':  'Turn a high-quality TIFF into a multi-size ICO favicon — all resolutions packed into one file.',
+    'webp-ico':  'Create an ICO favicon from your WebP image with 16×16, 32×32 and 48×48 sizes embedded.',
+    // HEIC complete
+    'heic-avif': 'Get the most compact file possible from your iPhone photos — AVIF compresses HEIC conversions further than JPG.',
+    'heic-gif':  'Convert iPhone HEIC photos to GIF — great for sharing animated moments or simple stills.',
+    'heic-bmp':  'Convert HEIC to BMP for use in Windows applications or legacy software that requires uncompressed images.',
+    'heic-tiff': 'Convert iPhone HEIC photos to TIFF for professional editing, print workflows, or archiving.',
+    // JPEG aliases
+    'jpeg-jpg':  'JPEG and JPG are the same format — this re-exports your file with optimized compression settings.',
+    'jpeg-png':  'Convert JPEG to PNG for lossless quality and transparency support. PNG is ideal for graphics and logos.',
+    'jpeg-webp': 'WebP offers better compression than JPEG at equivalent quality — reduce file size by up to 30%.',
+    'jpeg-avif': 'AVIF achieves even smaller files than WebP or JPEG — the next step up in compression efficiency.',
+    'jpeg-gif':  'Convert a JPEG photo to GIF format — reduces colors to 256 but gives universal compatibility.',
+    'jpeg-bmp':  'Convert JPEG to BMP for uncompressed output compatible with all Windows apps and legacy software.',
+    'jpeg-tiff': 'Convert JPEG to TIFF for lossless quality needed in print production or professional photo editing.',
+    // PNG alias
+    'png-jpeg':  'JPG files are much smaller than PNG for photos. Use when file size matters and transparency is not needed.',
+    // Complete AVIF
+    'avif-gif':  'Convert AVIF to GIF for universal compatibility — GIF is supported on every platform and messaging app.',
+    'avif-bmp':  'Convert AVIF to BMP for uncompressed output needed by legacy apps or Windows workflows.',
+    'avif-tiff': 'Get a high-quality TIFF from your AVIF for use in professional editing or print workflows.',
+    // Complete GIF
+    'gif-avif':  'AVIF compresses GIF content far more efficiently — great for reducing file size in modern browsers.',
+    'gif-bmp':   'Convert GIF to uncompressed BMP for use in software that doesn\'t support animated or compressed formats.',
+    'gif-tiff':  'Get a lossless TIFF from your GIF frame — ideal for archiving or professional image editing.',
+    // Complete BMP
+    'bmp-avif':  'Dramatically shrink oversized BMP files into next-gen AVIF — up to 90% smaller with great quality.',
+    'bmp-tiff':  'Convert BMP to TIFF for a lossless, more widely accepted format in professional and print workflows.',
+    'bmp-gif':   'Convert BMP to GIF to get a smaller, shareable image with universal compatibility.',
+    // Complete TIFF
+    'tiff-avif': 'AVIF compresses TIFF content significantly for web delivery while preserving excellent visual quality.',
+    'tiff-bmp':  'Convert TIFF to BMP for uncompressed output compatible with all Windows applications.',
+    'tiff-gif':  'Convert a TIFF to GIF for a compact, shareable image that works everywhere.',
   };
 
   const key = `${from}-${to}`;

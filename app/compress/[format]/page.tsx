@@ -15,7 +15,7 @@ const META: Record<string, { title: string; description: string }> = {
   image: {
     title: 'Compress Image Online Free — Pixvert',
     description:
-      'Compress any image online for free. Supports JPG, PNG, WebP. Reduce file sizes by up to 60% — 100% local processing, no upload required.',
+      'Compress any image online for free. Supports JPG, PNG, WebP, HEIC, AVIF, GIF. Reduce file sizes by up to 60% — 100% local processing, no upload required.',
   },
   jpg: {
     title: 'Compress JPG Online Free — Pixvert',
@@ -31,6 +31,31 @@ const META: Record<string, { title: string; description: string }> = {
     title: 'Compress WebP Online Free — Pixvert',
     description:
       'Compress WebP images online for free. Keep quality high while reducing file size. 100% local processing — instant and private.',
+  },
+  avif: {
+    title: 'Compress AVIF Online Free — Pixvert',
+    description:
+      'Compress AVIF images online for free. Reduce file size while keeping the next-gen quality AVIF is known for. 100% private — no upload required.',
+  },
+  gif: {
+    title: 'Compress GIF Online Free — Pixvert',
+    description:
+      'Compress GIF images online for free. Reduce file size without changing format. Fast, private, 100% browser-based — your files never leave your device.',
+  },
+  heic: {
+    title: 'Compress HEIC Online Free — Pixvert',
+    description:
+      'Compress HEIC photos from your iPhone online for free. Reduce file size while keeping the output as JPEG. Fast, private, no upload required.',
+  },
+  bmp: {
+    title: 'Compress BMP Online Free — Pixvert',
+    description:
+      'Compress oversized BMP files online for free. Reduce file size up to 90% with no visible quality loss. 100% local — no upload required.',
+  },
+  tiff: {
+    title: 'Compress TIFF Online Free — Pixvert',
+    description:
+      'Compress TIFF images online for free. Reduce large TIFF file sizes for faster sharing while keeping high quality. 100% private processing.',
   },
 };
 
@@ -61,6 +86,16 @@ const BENEFITS: Record<string, string> = {
     'PNG compression removes redundant data to shrink file size while keeping the lossless quality PNG is known for. Ideal for icons, logos, and graphics.',
   webp:
     'WebP is already efficient, but further compression helps when you need the smallest possible files for web delivery — without changing format.',
+  avif:
+    'AVIF achieves extraordinary compression ratios. Even a lightly compressed AVIF is significantly smaller than JPG or WebP at the same perceived quality — ideal for modern web delivery.',
+  gif:
+    'GIF files can be surprisingly large, especially for animations. Compressing a GIF reduces its color palette and optimizes frame data, keeping it playable while cutting file size.',
+  heic:
+    'HEIC photos from iPhones are already compressed, but converting to a smaller JPEG makes them universally compatible. This tool converts your HEIC photos to compressed JPEG automatically.',
+  bmp:
+    'BMP is an uncompressed format — files are often 10–20× larger than necessary. Compressing BMP exports a smaller file in the same visual quality, saving significant disk space and transfer time.',
+  tiff:
+    'TIFF files used in professional photography and print workflows are notoriously large. Compressing them for digital delivery significantly reduces size while retaining the detail that makes TIFF valuable.',
 };
 
 export default async function CompressPage({ params }: Props) {

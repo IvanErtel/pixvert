@@ -50,6 +50,42 @@ export const SEO_CONVERSIONS: ConversionRoute[] = [
   { from: 'heic', to: 'jpg',  slug: 'heic-to-jpg'  },
   { from: 'heic', to: 'png',  slug: 'heic-to-png'  },
   { from: 'heic', to: 'webp', slug: 'heic-to-webp' },
+  { from: 'heic', to: 'avif', slug: 'heic-to-avif' },
+  { from: 'heic', to: 'gif',  slug: 'heic-to-gif'  },
+  { from: 'heic', to: 'bmp',  slug: 'heic-to-bmp'  },
+  { from: 'heic', to: 'tiff', slug: 'heic-to-tiff' },
+  // JPEG alias conversions (high search volume for "jpeg" spelling)
+  { from: 'jpeg', to: 'jpg',  slug: 'jpeg-to-jpg'  },
+  { from: 'jpeg', to: 'png',  slug: 'jpeg-to-png'  },
+  { from: 'jpeg', to: 'webp', slug: 'jpeg-to-webp' },
+  { from: 'jpeg', to: 'avif', slug: 'jpeg-to-avif' },
+  { from: 'jpeg', to: 'gif',  slug: 'jpeg-to-gif'  },
+  { from: 'jpeg', to: 'bmp',  slug: 'jpeg-to-bmp'  },
+  { from: 'jpeg', to: 'tiff', slug: 'jpeg-to-tiff' },
+  // PNG alias
+  { from: 'png',  to: 'jpg',  slug: 'png-to-jpeg'  },
+  // Complete AVIF set
+  { from: 'avif', to: 'gif',  slug: 'avif-to-gif'  },
+  { from: 'avif', to: 'bmp',  slug: 'avif-to-bmp'  },
+  { from: 'avif', to: 'tiff', slug: 'avif-to-tiff' },
+  { from: 'avif', to: 'ico',  slug: 'avif-to-ico'  },
+  // Complete GIF set
+  { from: 'gif',  to: 'avif', slug: 'gif-to-avif'  },
+  { from: 'gif',  to: 'bmp',  slug: 'gif-to-bmp'   },
+  { from: 'gif',  to: 'tiff', slug: 'gif-to-tiff'  },
+  { from: 'gif',  to: 'ico',  slug: 'gif-to-ico'   },
+  // Complete BMP set
+  { from: 'bmp',  to: 'avif', slug: 'bmp-to-avif'  },
+  { from: 'bmp',  to: 'tiff', slug: 'bmp-to-tiff'  },
+  { from: 'bmp',  to: 'gif',  slug: 'bmp-to-gif'   },
+  { from: 'bmp',  to: 'ico',  slug: 'bmp-to-ico'   },
+  // Complete TIFF set
+  { from: 'tiff', to: 'avif', slug: 'tiff-to-avif' },
+  { from: 'tiff', to: 'bmp',  slug: 'tiff-to-bmp'  },
+  { from: 'tiff', to: 'gif',  slug: 'tiff-to-gif'  },
+  { from: 'tiff', to: 'ico',  slug: 'tiff-to-ico'  },
+  // WebP missing
+  { from: 'webp', to: 'ico',  slug: 'webp-to-ico'  },
 ];
 
 export function getConversionBySlug(slug: string): ConversionRoute | undefined {
@@ -70,6 +106,11 @@ export const SEO_COMPRESS: CompressRoute[] = [
   { format: 'jpg',   label: 'JPG'   },
   { format: 'png',   label: 'PNG'   },
   { format: 'webp',  label: 'WebP'  },
+  { format: 'avif',  label: 'AVIF'  },
+  { format: 'gif',   label: 'GIF'   },
+  { format: 'heic',  label: 'HEIC'  },
+  { format: 'bmp',   label: 'BMP'   },
+  { format: 'tiff',  label: 'TIFF'  },
 ];
 
 export function getCompressByFormat(format: string): CompressRoute | undefined {
