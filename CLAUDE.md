@@ -17,6 +17,16 @@ Convertidor de imágenes SaaS con procesamiento 100% client-side. Sin backend de
 | Free | $0 | 10 conversiones/día, 5MB/archivo, PNG/JPG/WebP |
 | Pro | $3.99/mes | Ilimitado, 50MB/archivo, todos los formatos (AVIF incluido) |
 
+## Visión del producto
+Pixvert es una suite de herramientas online gratuitas, todas client-side. Se expande por fases:
+- **Fase 1** ✅ Image Tools (converter, resize, compress, rotate, base64, watermark, crop, remove-bg)
+- **Fase 2** Text Tools (word counter, case converter, lorem ipsum, diff, URL encoder, base64 text, slug, accents, frequency, blank lines)
+- **Fase 3** Color Tools (picker, converter, palette, gradient, contrast checker)
+- **Fase 4** Developer Tools (JSON formatter, JSON↔CSV, CSS/JS minifier, HTML formatter, meta tags, .htaccess)
+- **Fase 5** Calculators (mortgage, VAT Spain, salary Spain, %, BMI, age, date diff, timezone, units, tip)
+- **Fase 6** Generators (QR, password, UUID, random, email signature, privacy policy, robots.txt)
+- **Fase 7** File Tools (PDF merge, PDF compress, markdown→HTML, Excel→CSV)
+
 ## Archivos clave
 ```
 app/
@@ -24,7 +34,16 @@ app/
   pricing/page.tsx      — Planes Free vs Pro
   activate/page.tsx     — Activar Pro con email (+ PIN para owner)
   success/              — Página post-pago (activa Pro automáticamente)
-  convert/[slug]/       — 18 páginas SEO estáticas
+  convert/[slug]/       — 80+ páginas SEO estáticas de conversión
+  compress/[format]/    — 9 páginas SEO de compresión por formato
+  tools/
+    page.tsx            — Hub de todas las herramientas por categoría
+    resize/page.tsx     — Redimensionar imágenes (usa Converter)
+    rotate/page.tsx     — Rotar/voltear imágenes (Canvas API)
+    image-to-base64/page.tsx — Imagen a Base64 / Base64 a imagen
+    watermark/page.tsx  — Marca de agua de texto (Canvas API)
+    crop/page.tsx       — Recortar imágenes (ComingSoon)
+    remove-background/page.tsx — Quitar fondo (ComingSoon)
   api/
     checkout/route.ts   — Crea sesión Stripe Checkout
     verify/route.ts     — Verifica suscripción activa en Stripe
@@ -33,9 +52,10 @@ app/
     webhook/route.ts    — Recibe eventos de Stripe
 
 components/
-  Converter.tsx         — Lógica principal de conversión
+  Converter.tsx         — Lógica principal de conversión (convert + optimize + resize)
   DropZone.tsx          — Zona de arrastre (5MB free / 50MB Pro)
-  Header.tsx            — Nav con badge Pro / link "¿Ya eres Pro?"
+  Header.tsx            — Nav: Tools / Pricing / Pro badge / idioma / tema
+  ComingSoonTool.tsx    — Placeholder con formulario de notificación por email
   ProSection.tsx        — Sección promocional en home (solo usuarios free)
   SubscriptionProvider.tsx — Context: lee email de localStorage, llama /api/verify
 
@@ -46,10 +66,19 @@ lib/
   subscription.ts       — Context y hook useSubscription()
   i18n.ts               — 9 idiomas: en, es, fr, de, pt, it, ja, ko, zh
   stripe.ts             — Cliente Stripe singleton
+  seo-conversions.ts    — Rutas SEO para /convert/[slug] y /compress/[format]
 
 public/
   converter.worker.js   — Web Worker con OffscreenCanvas
 ```
+
+## Patrón para nuevas herramientas de imagen
+Las herramientas de imagen en `/tools/[name]/page.tsx` son client components (`'use client'`) que:
+1. Usan drag-and-drop + file input para cargar la imagen
+2. Procesan con Canvas API en el main thread (sin worker, son operaciones sencillas)
+3. Muestran preview en `<canvas>` con CSS `max-w-full h-auto`
+4. Ofrecen descarga en PNG/JPEG/WebP
+5. No tienen límites de plan (herramientas auxiliares, no conversiones)
 
 ## Sistema de suscripción
 - El email del usuario se guarda en `localStorage` con clave `pixvert_email`

@@ -50,6 +50,12 @@ export default function Header() {
 
         <nav className="flex items-center gap-4">
           <Link
+            href="/tools"
+            className="text-sm text-slate-600 dark:text-slate-400 hover:text-[#6366F1] transition-colors"
+          >
+            Tools
+          </Link>
+          <Link
             href="/pricing"
             className="text-sm text-slate-600 dark:text-slate-400 hover:text-[#6366F1] transition-colors"
           >

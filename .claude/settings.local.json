@@ -18,7 +18,12 @@
       "Bash(npx tsc *)",
       "Bash(npm list *)",
       "Bash(node scripts/generate-icons.mjs)",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Bash(Get-ChildItem -Path \"D:\\\\Ivan\\\\Pixvert\" -Directory)",
+      "Bash(Select-Object Name)",
+      "PowerShell(ls \"D:\\\\Ivan\\\\Pixvert\" | Where-Object { $_.PSIsContainer })",
+      "Bash(Move-Item -Path \"app\\\\tools\\\\image-to-base64\\\\page.tsx\" -Destination \"app\\\\tools\\\\image-to-base64\\\\page.tsx\" -ErrorAction SilentlyContinue)",
+      "Bash(exit 0)"
     ]
   }
 }
