@@ -118,10 +118,9 @@ const CATEGORIES: Category[] = [
     name: 'File Tools',
     icon: '📁',
     tools: [
-      { name: 'PDF Merger', desc: 'Merge multiple PDFs into one document', href: '/tools/pdf-merge', status: 'planned', icon: '📑' },
-      { name: 'PDF Compressor', desc: 'Reduce PDF file size', href: '/tools/pdf-compress', status: 'planned', icon: '📉' },
-      { name: 'Markdown to HTML', desc: 'Convert Markdown to clean HTML', href: '/tools/markdown-to-html', status: 'planned', icon: '📋' },
-      { name: 'Excel to CSV', desc: 'Convert Excel spreadsheets to CSV', href: '/tools/excel-to-csv', status: 'planned', icon: '📊' },
+      { name: 'PDF Merger', desc: 'Merge multiple PDFs into one document', href: '/tools/pdf-merge', status: 'live', icon: '📑' },
+      { name: 'Markdown to HTML', desc: 'Convert Markdown to clean HTML', href: '/tools/markdown-to-html', status: 'live', icon: '📋' },
+      { name: 'Excel to CSV', desc: 'Convert Excel spreadsheets to CSV', href: '/tools/excel-to-csv', status: 'live', icon: '📊' },
     ],
   },
 ];

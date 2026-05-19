@@ -3,7 +3,7 @@
 # Pixvert — Guía del proyecto
 
 ## Qué es
-Convertidor de imágenes SaaS con procesamiento 100% client-side. Sin backend de procesamiento, sin subida de archivos a servidor. Modelo freemium con Stripe.
+Suite de herramientas online gratuitas, todas client-side. Incluye conversión de imágenes con modelo freemium (Stripe). Sin backend de procesamiento, sin subida de archivos a servidor.
 
 ## Stack
 - **Next.js 16** (App Router, TypeScript strict)
@@ -11,21 +11,105 @@ Convertidor de imágenes SaaS con procesamiento 100% client-side. Sin backend de
 - **Stripe** — suscripciones mensuales, Checkout + Customer Portal + Webhooks
 - **Vercel** — deploy en `https://pixvert-one.vercel.app`
 
+## Dependencias clave (además de Next/React)
+| Paquete | Uso |
+|---------|-----|
+| `gif-encoder-2` | Encoder GIF client-side |
+| `heic2any` | Conversión HEIC → otros formatos |
+| `jszip` | (disponible, no en uso activo) |
+| `stripe` | SDK server-side para API routes |
+| `qrcode` + `@types/qrcode` | Generador QR Code |
+| `marked` | Markdown → HTML |
+| `xlsx` | Excel → CSV (SheetJS) |
+| `pdf-lib` | PDF Merger client-side |
+
 ## Planes
 | Plan | Precio | Límites |
 |------|--------|---------|
 | Free | $0 | 10 conversiones/día, 5MB/archivo, PNG/JPG/WebP |
 | Pro | $3.99/mes | Ilimitado, 50MB/archivo, todos los formatos (AVIF incluido) |
 
-## Visión del producto
-Pixvert es una suite de herramientas online gratuitas, todas client-side. Se expande por fases:
+## Visión del producto — Estado actual
+Pixvert es una suite de herramientas online gratuitas, todas client-side. Todas las fases están implementadas:
 - **Fase 1** ✅ Image Tools (converter, resize, compress, rotate, base64, watermark, crop, remove-bg)
-- **Fase 2** Text Tools (word counter, case converter, lorem ipsum, diff, URL encoder, base64 text, slug, accents, frequency, blank lines)
-- **Fase 3** Color Tools (picker, converter, palette, gradient, contrast checker)
-- **Fase 4** Developer Tools (JSON formatter, JSON↔CSV, CSS/JS minifier, HTML formatter, meta tags, .htaccess)
-- **Fase 5** Calculators (mortgage, VAT Spain, salary Spain, %, BMI, age, date diff, timezone, units, tip)
-- **Fase 6** Generators (QR, password, UUID, random, email signature, privacy policy, robots.txt)
-- **Fase 7** File Tools (PDF merge, PDF compress, markdown→HTML, Excel→CSV)
+- **Fase 2** ✅ Text Tools (word counter, case converter, lorem ipsum, diff, URL encoder, base64 text, slug, accents, frequency, blank lines)
+- **Fase 3** ✅ Color Tools (picker, converter, palette, gradient, contrast checker)
+- **Fase 4** ✅ Developer Tools (JSON formatter, JSON↔CSV, CSS/JS minifier, HTML formatter, meta tags, .htaccess)
+- **Fase 5** ✅ Calculators (mortgage, VAT Spain, salary Spain, %, BMI, age, date diff, units, tip)
+- **Fase 6** ✅ Generators (QR, password, UUID, random, email signature, privacy policy, robots.txt)
+- **Fase 7** ✅ File Tools (PDF merge, markdown→HTML, Excel→CSV)
+
+## Herramientas — rutas completas
+```
+/                           — Conversor principal (Home)
+/tools                      — Hub de todas las herramientas
+
+Image Tools
+  /tools/resize             — Redimensionar imágenes
+  /tools/rotate             — Rotar/voltear (Canvas API)
+  /tools/image-to-base64    — Imagen ↔ Base64 data URI
+  /tools/watermark          — Marca de agua de texto
+  /tools/crop               — Recortar (ComingSoon)
+  /tools/remove-background  — Quitar fondo (ComingSoon)
+  /compress/image           — Compresor de imágenes
+
+Text Tools
+  /tools/word-counter       — Contadores en tiempo real
+  /tools/case-converter     — UPPER/lower/Title/camel/snake
+  /tools/lorem-ipsum        — Generador de texto de relleno
+  /tools/text-diff          — Comparar dos textos
+  /tools/url-encoder        — Encode/decode URL
+  /tools/base64-text        — Texto ↔ Base64
+  /tools/text-to-slug       — Texto → slug URL
+  /tools/remove-accents     — Eliminar acentos/diacríticos
+  /tools/word-frequency     — Frecuencia de palabras
+  /tools/remove-blank-lines — Eliminar líneas vacías
+
+Color Tools
+  /tools/color-picker       — Selector HEX/RGB/HSL + WCAG
+  /tools/color-converter    — HEX ↔ RGB ↔ HSL
+  /tools/color-palette      — Paletas armónicas
+  /tools/gradient-generator — Gradientes CSS
+  /tools/contrast-checker   — Ratio WCAG AA/AAA
+
+Developer Tools
+  /tools/json-formatter     — Formatear/minificar/validar JSON
+  /tools/json-csv           — JSON ↔ CSV
+  /tools/css-minifier       — Minificar CSS
+  /tools/js-minifier        — Minificar JavaScript
+  /tools/html-formatter     — Formatear HTML
+  /tools/meta-tags          — Generar meta tags SEO/OG/Twitter
+  /tools/htaccess-generator — Generar .htaccess Apache
+
+Calculators
+  /tools/mortgage-calculator   — Hipoteca mensual
+  /tools/vat-calculator        — IVA España (21/10/4%)
+  /tools/salary-calculator     — Bruto → neto IRPF España
+  /tools/percentage-calculator — Calculadora de porcentajes
+  /tools/bmi-calculator        — Índice de masa corporal
+  /tools/age-calculator        — Edad exacta + countdown cumpleaños
+  /tools/date-difference       — Días entre fechas
+  /tools/unit-converter        — Peso, longitud, temperatura, volumen
+  /tools/tip-calculator        — Propinas + dividir cuenta
+
+Generators
+  /tools/qr-generator       — QR Code (qrcode, canvas, colores custom)
+  /tools/password-generator — Contraseñas (Web Crypto API)
+  /tools/uuid-generator     — UUID v4 (crypto.randomUUID)
+  /tools/random-numbers     — Números aleatorios (int/float, bulk, únicos)
+  /tools/email-signature    — Firma HTML para email (3 templates)
+  /tools/privacy-policy     — Política de privacidad (GDPR, cookies...)
+  /tools/robots-txt         — robots.txt (presets, bloqueo AI bots)
+
+File Tools
+  /tools/pdf-merge          — Unir PDFs (pdf-lib, reordenar, 100% local)
+  /tools/markdown-to-html   — Markdown → HTML (marked, live preview)
+  /tools/excel-to-csv       — Excel → CSV (xlsx/SheetJS, multi-sheet)
+
+SEO pages
+  /convert/[slug]           — 89 rutas de conversión entre formatos
+  /compress/[format]        — 9 rutas de compresión por formato
+```
 
 ## Archivos clave
 ```
@@ -34,16 +118,14 @@ app/
   pricing/page.tsx      — Planes Free vs Pro
   activate/page.tsx     — Activar Pro con email (+ PIN para owner)
   success/              — Página post-pago (activa Pro automáticamente)
-  convert/[slug]/       — 80+ páginas SEO estáticas de conversión
-  compress/[format]/    — 9 páginas SEO de compresión por formato
+  convert/[slug]/       — Páginas SEO estáticas de conversión
+  compress/[format]/    — Páginas SEO de compresión por formato
+  sitemap.ts            — Sitemap completo (135 rutas estáticas)
   tools/
     page.tsx            — Hub de todas las herramientas por categoría
-    resize/page.tsx     — Redimensionar imágenes (usa Converter)
-    rotate/page.tsx     — Rotar/voltear imágenes (Canvas API)
-    image-to-base64/page.tsx — Imagen a Base64 / Base64 a imagen
-    watermark/page.tsx  — Marca de agua de texto (Canvas API)
-    crop/page.tsx       — Recortar imágenes (ComingSoon)
-    remove-background/page.tsx — Quitar fondo (ComingSoon)
+    [nombre]/
+      page.tsx          — Metadata SEO + import del Tool component
+      [Nombre]Tool.tsx  — Componente client-side ('use client')
   api/
     checkout/route.ts   — Crea sesión Stripe Checkout
     verify/route.ts     — Verifica suscripción activa en Stripe
@@ -71,6 +153,13 @@ lib/
 public/
   converter.worker.js   — Web Worker con OffscreenCanvas
 ```
+
+## Patrón para herramientas (todas las fases)
+Cada herramienta sigue el mismo patrón en `app/tools/[nombre]/`:
+- `page.tsx` — Server component con `export const metadata` (SEO) + import del Tool
+- `[Nombre]Tool.tsx` — Client component (`'use client'`) con toda la lógica UI
+- Las herramientas usan dynamic import para librerías pesadas (pdf-lib, xlsx, marked, qrcode) para no penalizar el bundle inicial
+- No tienen límites de plan (solo el conversor principal los tiene)
 
 ## Patrón para nuevas herramientas de imagen
 Las herramientas de imagen en `/tools/[name]/page.tsx` son client components (`'use client'`) que:
@@ -121,10 +210,11 @@ Las herramientas de imagen en `/tools/[name]/page.tsx` son client components (`'
 - Para agregar texto nuevo: añadir la clave en todos los archivos de `locales/`
 
 ## SEO
-- 33 rutas estáticas en `/convert/[slug]` generadas con `generateStaticParams`
-- Slugs definidos en `lib/seo-conversions.ts`
-- Cubre: PNG, JPG, WebP, AVIF, BMP, GIF, TIFF, ICO como destinos
-- Para agregar nuevas rutas: añadir entrada en `SEO_CONVERSIONS` y benefit en `ConversionBenefits`
+- 89 rutas en `/convert/[slug]` generadas con `generateStaticParams` (definidas en `lib/seo-conversions.ts`)
+- 9 rutas en `/compress/[format]` (también en `lib/seo-conversions.ts`)
+- 47 rutas `/tools/[nombre]` — cada una con `export const metadata` propio
+- Sitemap completo en `app/sitemap.ts` — 135 páginas estáticas totales
+- Para agregar nuevas rutas de conversión: añadir entrada en `SEO_CONVERSIONS` en `lib/seo-conversions.ts`
 
 ## Conversión de imágenes
 - Web Worker (`public/converter.worker.js`) con `OffscreenCanvas` — fallback a main thread si no hay soporte

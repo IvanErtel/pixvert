@@ -55,6 +55,10 @@ const TOOL_ROUTES = [
   '/tools/email-signature',
   '/tools/privacy-policy',
   '/tools/robots-txt',
+  // File Tools
+  '/tools/pdf-merge',
+  '/tools/markdown-to-html',
+  '/tools/excel-to-csv',
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
