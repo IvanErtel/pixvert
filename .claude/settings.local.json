@@ -23,7 +23,8 @@
       "Bash(Select-Object Name)",
       "PowerShell(ls \"D:\\\\Ivan\\\\Pixvert\" | Where-Object { $_.PSIsContainer })",
       "Bash(Move-Item -Path \"app\\\\tools\\\\image-to-base64\\\\page.tsx\" -Destination \"app\\\\tools\\\\image-to-base64\\\\page.tsx\" -ErrorAction SilentlyContinue)",
-      "Bash(exit 0)"
+      "Bash(exit 0)",
+      "Bash(npx eslint *)"
     ]
   }
 }

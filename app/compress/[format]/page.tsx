@@ -1,7 +1,14 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import CompressorPreset from '@/components/CompressorPreset';
-import { SEO_COMPRESS, getCompressByFormat } from '@/lib/seo-conversions';
+import {
+  SEO_COMPRESS,
+  getCompressByFormat,
+  getRelatedCompress,
+  getConversionsFrom,
+  formatLabel,
+} from '@/lib/seo-conversions';
 
 interface Props {
   params: Promise<{ format: string }>;
@@ -106,6 +113,8 @@ export default async function CompressPage({ params }: Props) {
   const isGeneric = format === 'image';
   const headline = isGeneric ? 'Compress Image Online' : `Compress ${route.label} Online`;
   const benefit = BENEFITS[format] ?? BENEFITS['image'];
+  const relatedCompress = getRelatedCompress(format);
+  const relatedConversions = isGeneric ? [] : getConversionsFrom(format);
 
   return (
     <div className="max-w-3xl mx-auto w-full px-4 py-10">
@@ -174,6 +183,44 @@ export default async function CompressPage({ params }: Props) {
           Completely. Pixvert processes everything locally in your browser using the Web Canvas API.
           Your images are never uploaded to any server — they never leave your device.
         </p>
+
+        {relatedConversions.length > 0 && (
+          <>
+            <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3 mt-8">
+              Convert {route.label} instead
+            </h2>
+            <div className="flex flex-wrap gap-2 not-prose">
+              {relatedConversions.map((c) => (
+                <Link
+                  key={c.slug}
+                  href={`/convert/${c.slug}`}
+                  className="text-xs font-medium px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                >
+                  {formatLabel(c.from)} to {formatLabel(c.to)}
+                </Link>
+              ))}
+            </div>
+          </>
+        )}
+
+        {relatedCompress.length > 0 && (
+          <>
+            <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3 mt-8">
+              Compress other formats
+            </h2>
+            <div className="flex flex-wrap gap-2 not-prose">
+              {relatedCompress.map((c) => (
+                <Link
+                  key={c.format}
+                  href={`/compress/${c.format}`}
+                  className="text-xs font-medium px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                >
+                  {c.label}
+                </Link>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

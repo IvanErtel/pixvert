@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import ConverterPreset from '@/components/ConverterPreset';
-import { SEO_CONVERSIONS, getConversionBySlug, formatLabel } from '@/lib/seo-conversions';
+import { SEO_CONVERSIONS, getConversionBySlug, getRelatedConversions, formatLabel } from '@/lib/seo-conversions';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -39,6 +40,7 @@ export default async function ConvertPage({ params }: Props) {
 
   const from = formatLabel(conversion.from);
   const to = formatLabel(conversion.to);
+  const related = getRelatedConversions(conversion);
 
   return (
     <div className="max-w-3xl mx-auto w-full px-4 py-10">
@@ -87,6 +89,25 @@ export default async function ConvertPage({ params }: Props) {
           Why convert {from} to {to}?
         </h2>
         <ConversionBenefits from={conversion.from} to={conversion.to} />
+
+        {related.length > 0 && (
+          <>
+            <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3 mt-8">
+              Related conversions
+            </h2>
+            <div className="flex flex-wrap gap-2 not-prose">
+              {related.map((r) => (
+                <Link
+                  key={r.slug}
+                  href={`/convert/${r.slug}`}
+                  className="text-xs font-medium px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                >
+                  {formatLabel(r.from)} to {formatLabel(r.to)}
+                </Link>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

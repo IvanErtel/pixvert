@@ -92,6 +92,23 @@ export function getConversionBySlug(slug: string): ConversionRoute | undefined {
   return SEO_CONVERSIONS.find((c) => c.slug === slug);
 }
 
+/** Reverse conversion, other conversions sharing the same source format, then same target format. */
+export function getRelatedConversions(current: ConversionRoute, limit = 8): ConversionRoute[] {
+  const reverse = SEO_CONVERSIONS.find((c) => c.from === current.to && c.to === current.from);
+  const sameFrom = SEO_CONVERSIONS.filter((c) => c.from === current.from && c.slug !== current.slug);
+  const sameTo = SEO_CONVERSIONS.filter((c) => c.to === current.to && c.slug !== current.slug);
+
+  const seen = new Set([current.slug]);
+  const related: ConversionRoute[] = [];
+  for (const c of [...(reverse ? [reverse] : []), ...sameFrom, ...sameTo]) {
+    if (!seen.has(c.slug)) {
+      seen.add(c.slug);
+      related.push(c);
+    }
+  }
+  return related.slice(0, limit);
+}
+
 export function formatLabel(ext: string): string {
   return ext.toUpperCase();
 }
@@ -115,4 +132,14 @@ export const SEO_COMPRESS: CompressRoute[] = [
 
 export function getCompressByFormat(format: string): CompressRoute | undefined {
   return SEO_COMPRESS.find((c) => c.format === format);
+}
+
+/** Other compress-format pages, excluding the current one. */
+export function getRelatedCompress(format: string, limit = 8): CompressRoute[] {
+  return SEO_COMPRESS.filter((c) => c.format !== format).slice(0, limit);
+}
+
+/** Convert routes that start from the given format — used to cross-link compress pages to converters. */
+export function getConversionsFrom(format: string, limit = 6): ConversionRoute[] {
+  return SEO_CONVERSIONS.filter((c) => c.from === format).slice(0, limit);
 }
