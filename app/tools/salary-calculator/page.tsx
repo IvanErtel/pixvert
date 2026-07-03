@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import SalaryCalculatorTool from './SalaryCalculatorTool';
-import ToolSEOContent, { type ToolSEOData } from '@/components/ToolSEOContent';
+import { type ToolSEOData } from '@/components/ToolSEOContent';
+import LocalizedToolSEO from '@/components/LocalizedToolSEO';
 import SchemaMarkup from '@/components/SchemaMarkup';
+import { Locale } from '@/lib/i18n';
 
 export const metadata: Metadata = {
   title: 'Salary Calculator Spain Free — Net Salary IRPF 2024 | Pixvert',
@@ -13,7 +15,7 @@ export const metadata: Metadata = {
   },
 };
 
-const seo: ToolSEOData = {
+const seoEn: ToolSEOData = {
   toolName: 'Salary Calculator Spain',
   whatIsHeading: 'What is a gross-to-net salary calculator for Spain?',
   whatIsParagraphs: [
@@ -59,19 +61,67 @@ const seo: ToolSEOData = {
   ],
 };
 
+const seoEs: ToolSEOData = {
+  toolName: 'Calculadora de Salario España',
+  whatIsHeading: '¿Qué es una calculadora de salario bruto a neto para España?',
+  whatIsParagraphs: [
+    'Una calculadora de salario para España convierte tu salario anual o mensual bruto en la cantidad real que recibes como neto, tras descontar la retención de IRPF y las cotizaciones a la Seguridad Social. La calculadora de Pixvert aplica los tramos progresivos de IRPF y el tipo estándar de cotización del trabajador a la Seguridad Social usado en España.',
+    'Las ofertas de trabajo en España casi siempre se expresan en términos brutos, lo que puede dificultar saber qué llega realmente a tu cuenta cada mes. Esta calculadora maneja tanto la estructura de 12 pagas como la de 14 pagas, comunes en los contratos laborales españoles, y muestra la cifra neta mensual para cada una.',
+    'La retención de IRPF en España depende de tu nivel de ingresos, circunstancias personales y comunidad autónoma, así que esta calculadora ofrece una estimación aproximada basada en los tramos nacionales estándar en vez de una cifra exacta de nómina — útil para comparar ofertas de trabajo o planificar un presupuesto antes de recibir tu primera nómina.',
+  ],
+  howToHeading: 'Cómo calcular tu salario neto',
+  howToSteps: [
+    { title: 'Introduce tu salario bruto anual', description: 'el "salario bruto anual" indicado en tu contrato u oferta de trabajo' },
+    { title: 'Elige 12 o 14 pagas', description: 'selecciona si tu salario se paga en 12 mensualidades o se divide con dos "pagas extra"' },
+    { title: 'Revisa tu salario neto', description: 've la cifra anual y mensual neta estimada tras las deducciones de IRPF y Seguridad Social' },
+    { title: 'Compara escenarios', description: 'ajusta el salario bruto para comparar distintas ofertas de trabajo lado a lado' },
+  ],
+  useCasesHeading: 'Cuándo usar una calculadora de salario',
+  useCases: [
+    { title: 'Comparar ofertas de trabajo', description: 'Convierte dos ofertas de salario bruto a términos netos para ver cuál paga realmente más al mes.' },
+    { title: 'Negociar una subida', description: 'Entiende cuánto se traduce realmente un aumento de salario bruto en más dinero neto en mano.' },
+    { title: 'Presupuestar antes de empezar un nuevo trabajo', description: 'Estima tus ingresos netos mensuales antes de tu primera nómina para poder planificar gastos con precisión.' },
+    { title: 'Entender una nómina', description: 'Comprueba las deducciones de IRPF y Seguridad Social de tu nómina contra una estimación independiente.' },
+    { title: 'Autónomos pasando a nómina', description: 'Compara los ingresos como autónomo con lo que netearía un salario bruto equivalente como empleado.' },
+  ],
+  whyHeading: '¿Por qué usar la calculadora de salario de Pixvert?',
+  whyReasons: [
+    { title: 'Cálculo específico para España', description: 'usa los tramos de IRPF y tipos de Seguridad Social aplicables en España, no una fórmula internacional genérica' },
+    { title: 'Soporte para 12 o 14 pagas', description: 'coincide con cómo se estructuran y pagan realmente los salarios en España' },
+    { title: '100% privado', description: 'tus cifras salariales se calculan localmente en tu navegador y nunca se transmiten' },
+    { title: 'Gratis, instantáneo, sin registro', description: 'obtén resultados de inmediato sin crear una cuenta' },
+  ],
+  faqs: [
+    { question: '¿Mi información salarial se envía a un servidor?', answer: 'No. Todo el cálculo se ejecuta localmente en tu navegador usando JavaScript. Tus cifras salariales nunca se transmiten ni se guardan en ningún sitio.' },
+    { question: '¿Cuál es la diferencia entre 12 y 14 pagas?', answer: 'Muchos contratos españoles pagan el salario anual en 12 mensualidades, mientras que otros lo dividen en 14 pagas añadiendo dos "pagas extra" (normalmente en verano y diciembre), lo que cambia la cifra neta mensual.' },
+    { question: '¿Esta calculadora coincide exactamente con mi nómina?', answer: 'Ofrece una estimación aproximada basada en los tramos nacionales estándar de IRPF y tipos de Seguridad Social. Tu nómina real puede variar ligeramente por circunstancias personales, variaciones autonómicas o deducciones específicas.' },
+    { question: '¿La calculadora tiene en cuenta hijos o deducciones personales?', answer: 'Esta versión usa tramos estándar sin deducciones personales o familiares, así que circunstancias individuales como tener hijos a cargo pueden reducir tu retención real de IRPF respecto a la estimación mostrada.' },
+    { question: '¿Esta calculadora está actualizada para el ejercicio fiscal actual?', answer: 'Sí, usa los tramos de IRPF y los tipos de cotización a la Seguridad Social vigentes para el año en curso.' },
+    { question: '¿Puedo usar esto si soy autónomo?', answer: 'Esta calculadora está diseñada para empleados asalariados con un contrato estándar. La tributación de autónomos sigue una estructura distinta con autoliquidaciones trimestrales y cotizaciones a la Seguridad Social separadas.' },
+  ],
+  relatedTools: [
+    { href: '/tools/mortgage-calculator', label: 'Calculadora de Hipoteca', description: 'Estima tu cuota mensual de hipoteca' },
+    { href: '/tools/vat-calculator', label: 'Calculadora de IVA', description: 'Calcula el IVA español al 21%, 10% o 4%' },
+    { href: '/tools/percentage-calculator', label: 'Calculadora de Porcentajes', description: 'Calcula porcentajes, aumentos y descuentos' },
+    { href: '/tools/tip-calculator', label: 'Calculadora de Propinas', description: 'Divide una cuenta y calcula propinas' },
+  ],
+};
+
+const seoByLocale: Partial<Record<Locale, ToolSEOData>> = { en: seoEn, es: seoEs };
+
 export default function SalaryCalculatorPage() {
   return (
     <>
       <SalaryCalculatorTool />
-      <ToolSEOContent {...seo} />
+      <LocalizedToolSEO content={seoByLocale} />
       <SchemaMarkup
-        name={seo.toolName}
+        name={seoEn.toolName}
         url="https://pixvert-one.vercel.app/tools/salary-calculator"
         description={metadata.description as string}
         features={['IRPF bracket calculation', 'Social Security deduction', '12 or 14 payment support', 'Local processing']}
-        howToName={seo.howToHeading}
-        howToSteps={seo.howToSteps}
-        faqs={seo.faqs}
+        howToName={seoEn.howToHeading}
+        howToSteps={seoEn.howToSteps}
+        faqs={seoEn.faqs}
       />
     </>
   );

@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import MortgageCalculatorTool from './MortgageCalculatorTool';
-import ToolSEOContent, { type ToolSEOData } from '@/components/ToolSEOContent';
+import { type ToolSEOData } from '@/components/ToolSEOContent';
+import LocalizedToolSEO from '@/components/LocalizedToolSEO';
 import SchemaMarkup from '@/components/SchemaMarkup';
+import { Locale } from '@/lib/i18n';
 
 export const metadata: Metadata = {
   title: 'Mortgage Calculator Online Free — Monthly Payment | Pixvert',
@@ -13,7 +15,7 @@ export const metadata: Metadata = {
   },
 };
 
-const seo: ToolSEOData = {
+const seoEn: ToolSEOData = {
   toolName: 'Mortgage Calculator',
   whatIsHeading: 'What is a mortgage calculator?',
   whatIsParagraphs: [
@@ -59,19 +61,67 @@ const seo: ToolSEOData = {
   ],
 };
 
+const seoEs: ToolSEOData = {
+  toolName: 'Calculadora de Hipoteca',
+  whatIsHeading: '¿Qué es una calculadora de hipoteca?',
+  whatIsParagraphs: [
+    'Una calculadora de hipoteca estima tu cuota mensual de préstamo en base a la cantidad que pides prestada, el tipo de interés y la duración del préstamo. La calculadora de Pixvert calcula tu cuota mensual al instante, junto con el importe total que pagarás durante la vida del préstamo y cuánto de eso son intereses frente a capital.',
+    'Comprar una vivienda es uno de los mayores compromisos financieros que la mayoría de personas asumen, y pequeñas diferencias en el tipo de interés o el plazo pueden cambiar la cuota mensual — y los intereses totales pagados — en decenas de miles a lo largo de 20 o 30 años. Esta calculadora te permite ajustar cada variable y ver el impacto de inmediato, sin necesitar una hoja de cálculo ni una cita en el banco.',
+    'La calculadora usa la fórmula de amortización estándar que usan los bancos, así que los números que ves aquí coinciden con lo que obtendrías de la propia estimación de un banco, permitiéndote comparar ofertas o explorar escenarios hipotéticos — una entrada mayor, un plazo más corto, un tipo distinto — antes de comprometerte a nada.',
+  ],
+  howToHeading: 'Cómo calcular tu cuota de hipoteca',
+  howToSteps: [
+    { title: 'Introduce el importe del préstamo', description: 'la cantidad total que planeas pedir prestada (precio de la vivienda menos la entrada)' },
+    { title: 'Introduce el tipo de interés', description: 'el tipo de interés anual ofrecido por tu banco' },
+    { title: 'Define el plazo del préstamo', description: 'normalmente 15, 20 o 30 años' },
+    { title: 'Revisa los resultados', description: 've tu cuota mensual estimada, coste total e intereses totales al instante' },
+  ],
+  useCasesHeading: 'Cuándo usar una calculadora de hipoteca',
+  useCases: [
+    { title: 'Comparar ofertas de préstamo', description: 'Introduce las condiciones de dos bancos distintos lado a lado para ver cuál resulta en un menor coste total.' },
+    { title: 'Decidir la entrada', description: 'Ve cómo aumentar tu entrada reduce el importe del préstamo, la cuota mensual y los intereses totales.' },
+    { title: 'Elegir el plazo del préstamo', description: 'Compara un plazo de 15 años frente a uno de 30 para entender el equilibrio entre cuota mensual e intereses totales.' },
+    { title: 'Presupuestar antes de buscar vivienda', description: 'Estima qué cuota mensual puedes permitirte antes de mirar propiedades en un rango de precio determinado.' },
+    { title: 'Decisiones de refinanciación', description: 'Compara las condiciones de tu hipoteca actual con una posible oferta de refinanciación.' },
+  ],
+  whyHeading: '¿Por qué usar la calculadora de hipoteca de Pixvert?',
+  whyReasons: [
+    { title: 'Resultados instantáneos', description: 'la cuota mensual, coste total e intereses totales se actualizan mientras escribes' },
+    { title: '100% privado', description: 'tus cifras financieras se calculan localmente en tu navegador y nunca se envían a ningún sitio' },
+    { title: 'Sin necesidad de registro', description: 'prueba tantos escenarios como quieras sin crear una cuenta' },
+    { title: 'Fórmula de amortización estándar', description: 'el mismo método de cálculo que usan los bancos, así que las estimaciones son realistas' },
+  ],
+  faqs: [
+    { question: '¿Mi información financiera se envía a algún sitio?', answer: 'No. Todos los cálculos se ejecutan localmente en tu navegador usando JavaScript. Los números que introduces nunca se transmiten ni se guardan.' },
+    { question: '¿Esta calculadora incluye impuestos y seguros?', answer: 'No, esta calculadora estima solo capital e intereses. Los impuestos de propiedad, el seguro de hogar y las cuotas de comunidad deberían añadirse aparte para una estimación completa del coste mensual.' },
+    { question: '¿Cómo se calcula la cuota mensual?', answer: 'La herramienta usa la fórmula estándar de amortización a tipo fijo, que reparte capital e intereses en cuotas mensuales iguales durante el plazo del préstamo.' },
+    { question: '¿Por qué un plazo más corto tiene una cuota mensual más alta pero un coste total menor?', answer: 'Un plazo más corto reparte el mismo importe de préstamo en menos cuotas, así que cada una es mayor, pero pagas muchos menos intereses en total ya que el préstamo se devuelve más rápido.' },
+    { question: '¿Puedo usar esto para un préstamo de coche o personal?', answer: 'La misma matemática de amortización se aplica a cualquier préstamo a plazos con tipo fijo, así que sí, aunque la herramienta está etiquetada y optimizada para escenarios de hipoteca.' },
+    { question: '¿Qué tipo de interés debo introducir si aún no tengo una oferta?', answer: 'Consulta los tipos de hipoteca medios actuales para tu país y tipo de préstamo como estimación inicial, y ajústalo cuando tengas una oferta real de un banco.' },
+  ],
+  relatedTools: [
+    { href: '/tools/salary-calculator', label: 'Calculadora de Salario', description: 'Estima tu salario neto tras deducciones fiscales' },
+    { href: '/tools/percentage-calculator', label: 'Calculadora de Porcentajes', description: 'Calcula porcentajes, aumentos y descuentos' },
+    { href: '/tools/vat-calculator', label: 'Calculadora de IVA', description: 'Calcula el IVA en España (21%, 10%, 4%)' },
+    { href: '/tools/unit-converter', label: 'Conversor de Unidades', description: 'Convierte entre peso, longitud, temperatura y volumen' },
+  ],
+};
+
+const seoByLocale: Partial<Record<Locale, ToolSEOData>> = { en: seoEn, es: seoEs };
+
 export default function MortgageCalculatorPage() {
   return (
     <>
       <MortgageCalculatorTool />
-      <ToolSEOContent {...seo} />
+      <LocalizedToolSEO content={seoByLocale} />
       <SchemaMarkup
-        name={seo.toolName}
+        name={seoEn.toolName}
         url="https://pixvert-one.vercel.app/tools/mortgage-calculator"
         description={metadata.description as string}
         features={['Monthly payment calculation', 'Total interest breakdown', 'Amortization formula', 'Local processing']}
-        howToName={seo.howToHeading}
-        howToSteps={seo.howToSteps}
-        faqs={seo.faqs}
+        howToName={seoEn.howToHeading}
+        howToSteps={seoEn.howToSteps}
+        faqs={seoEn.faqs}
       />
     </>
   );

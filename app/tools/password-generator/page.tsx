@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import PasswordGeneratorTool from './PasswordGeneratorTool';
-import ToolSEOContent, { type ToolSEOData } from '@/components/ToolSEOContent';
+import { type ToolSEOData } from '@/components/ToolSEOContent';
+import LocalizedToolSEO from '@/components/LocalizedToolSEO';
 import SchemaMarkup from '@/components/SchemaMarkup';
+import { Locale } from '@/lib/i18n';
 
 export const metadata: Metadata = {
   title: 'Password Generator Free Online — Strong & Secure | Pixvert',
@@ -13,7 +15,7 @@ export const metadata: Metadata = {
   },
 };
 
-const seo: ToolSEOData = {
+const seoEn: ToolSEOData = {
   toolName: 'Password Generator',
   whatIsHeading: 'What is a password generator?',
   whatIsParagraphs: [
@@ -61,19 +63,69 @@ const seo: ToolSEOData = {
   ],
 };
 
+const seoEs: ToolSEOData = {
+  toolName: 'Generador de Contraseñas',
+  whatIsHeading: '¿Qué es un generador de contraseñas?',
+  whatIsParagraphs: [
+    'Un generador de contraseñas crea contraseñas aleatorias e impredecibles, mucho más difíciles de adivinar o descifrar que cualquier cosa que se le ocurriría a una persona — incluidas contraseñas formadas por palabras reales, fechas de nacimiento o sustituciones predecibles como "P@ssw0rd". El generador de Pixvert usa la Web Crypto API, la misma aleatoriedad criptográficamente segura de la que dependen los navegadores para el cifrado, en vez de una función pseudoaleatoria más débil.',
+    'Tú controlas la longitud y qué conjuntos de caracteres se incluyen — minúsculas, mayúsculas, números y símbolos — para poder cumplir los requisitos de cualquier formulario de acceso, desde un mínimo simple de 8 caracteres hasta una frase de 64 caracteres para un gestor de contraseñas. Un indicador de fortaleza en vivo muestra cuán resistente es el resultado a ataques de fuerza bruta.',
+    'Reutilizar la misma contraseña (o variaciones de ella) en varios sitios es una de las causas más comunes de brechas de cuentas: en cuanto un servicio filtra una contraseña, los atacantes la prueban en todos lados. Generar una contraseña única y aleatoria por cuenta — idealmente guardada en un gestor de contraseñas — elimina ese riesgo por completo.',
+  ],
+  howToHeading: 'Cómo generar una contraseña fuerte',
+  howToSteps: [
+    { title: 'Define la longitud', description: 'las contraseñas más largas son exponencialmente más difíciles de descifrar — 16+ caracteres es un buen valor por defecto' },
+    { title: 'Elige los conjuntos de caracteres', description: 'activa minúsculas, mayúsculas, números y símbolos según lo que acepte el formulario de acceso' },
+    { title: 'Revisa el indicador de fortaleza', description: 'confirma que el resultado esté en el rango fuerte o muy fuerte' },
+    { title: 'Genera en lote si lo necesitas', description: 'crea varias contraseñas a la vez al configurar varias cuentas' },
+    { title: 'Cópiala y guárdala', description: 'copia la contraseña con un clic y guárdala en un gestor de contraseñas en vez de memorizarla' },
+  ],
+  useCasesHeading: 'Cuándo usar un generador de contraseñas',
+  useCases: [
+    { title: 'Registro de cuentas nuevas', description: 'Genera una contraseña única cada vez que crees una cuenta en vez de reutilizar una antigua.' },
+    { title: 'Contraseña maestra de un gestor', description: 'Crea una frase larga de alta entropía para esa única contraseña que sí necesitas recordar.' },
+    { title: 'Credenciales compartidas en equipo', description: 'Genera contraseñas temporales fuertes para accesos compartidos, redes Wi-Fi o cuentas de administrador.' },
+    { title: 'Restablecer contraseñas tras una filtración', description: 'Genera rápidamente nuevas contraseñas para cada cuenta afectada tras una filtración de datos.' },
+    { title: 'Claves de API y secretos', description: 'Úsalo como fuente rápida de caracteres aleatorios para tokens, secretos o códigos de acceso temporal.' },
+  ],
+  whyHeading: '¿Por qué usar Pixvert para generar contraseñas?',
+  whyReasons: [
+    { title: 'Aleatoriedad criptográficamente segura', description: 'basado en la Web Crypto API, no en un generador pseudoaleatorio predecible' },
+    { title: '100% local, nada se transmite', description: 'las contraseñas se generan y muestran solo en tu navegador — nunca se envían a un servidor ni se registran' },
+    { title: 'Personalización total', description: 'controla longitud y conjuntos de caracteres para cumplir cualquier política de contraseñas' },
+    { title: 'Generación en lote', description: 'crea varias contraseñas a la vez para múltiples cuentas' },
+  ],
+  faqs: [
+    { question: '¿Estas contraseñas son realmente aleatorias y seguras?', answer: 'Sí. El generador usa el generador de números aleatorios criptográficamente seguro de la Web Crypto API, la misma fuente que usan los navegadores para el cifrado — no una función Math.random() predecible.' },
+    { question: '¿Mi contraseña generada se envía o registra en algún sitio?', answer: 'No. Todo ocurre localmente en tu navegador. Pixvert nunca ve, guarda ni transmite las contraseñas que generas.' },
+    { question: '¿Qué longitud de contraseña debería usar?', answer: 'Para la mayoría de cuentas se recomiendan 16 caracteres o más con conjuntos de caracteres mixtos. Para la contraseña maestra de un gestor, considera 20+ caracteres.' },
+    { question: '¿Debería incluir símbolos en todas las contraseñas?', answer: 'Inclúyelos cuando el formulario lo permita — los símbolos aumentan la entropía. Algunos sistemas antiguos restringen caracteres especiales, en cuyo caso apóyate en la longitud.' },
+    { question: '¿Cómo se calcula la fortaleza de la contraseña?', answer: 'El indicador estima la entropía en base a la longitud y la variedad de conjuntos de caracteres usados, dando una medida aproximada de cuántos intentos necesitaría un ataque de fuerza bruta.' },
+    { question: '¿Puedo generar varias contraseñas a la vez?', answer: 'Sí, usa la opción de generación en lote para crear varias contraseñas de una vez, útil al configurar varias cuentas a la vez.' },
+    { question: '¿Debería seguir usando un gestor de contraseñas?', answer: 'Sí. Generar contraseñas fuertes y únicas es solo la mitad de la solución — un gestor de contraseñas te permite guardarlas y autocompletarlas sin necesidad de memorizar ninguna.' },
+  ],
+  relatedTools: [
+    { href: '/tools/uuid-generator', label: 'Generador de UUID', description: 'Genera identificadores únicos (UUID v4) con crypto.randomUUID' },
+    { href: '/tools/random-numbers', label: 'Generador de Números Aleatorios', description: 'Genera enteros o decimales aleatorios, en lote o únicos' },
+    { href: '/tools/qr-generator', label: 'Generador de Códigos QR', description: 'Crea un código QR para un enlace de acceso o credenciales Wi-Fi' },
+    { href: '/tools/base64-text', label: 'Base64 de Texto', description: 'Codifica o decodifica texto como Base64' },
+  ],
+};
+
+const seoByLocale: Partial<Record<Locale, ToolSEOData>> = { en: seoEn, es: seoEs };
+
 export default function PasswordGeneratorPage() {
   return (
     <>
       <PasswordGeneratorTool />
-      <ToolSEOContent {...seo} />
+      <LocalizedToolSEO content={seoByLocale} />
       <SchemaMarkup
-        name={seo.toolName}
+        name={seoEn.toolName}
         url="https://pixvert-one.vercel.app/tools/password-generator"
         description={metadata.description as string}
         features={['Cryptographically secure randomness', 'Custom length', 'Custom character sets', 'Bulk generation', 'Strength indicator']}
-        howToName={seo.howToHeading}
-        howToSteps={seo.howToSteps}
-        faqs={seo.faqs}
+        howToName={seoEn.howToHeading}
+        howToSteps={seoEn.howToSteps}
+        faqs={seoEn.faqs}
       />
     </>
   );

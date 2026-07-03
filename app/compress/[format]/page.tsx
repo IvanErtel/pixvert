@@ -2,8 +2,11 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import CompressorPreset from '@/components/CompressorPreset';
-import ToolSEOContent, { type ToolFAQ } from '@/components/ToolSEOContent';
+import ToolSEOContent, { type ToolFAQ, type ToolSEOData } from '@/components/ToolSEOContent';
+import LocalizedToolSEO from '@/components/LocalizedToolSEO';
 import SchemaMarkup from '@/components/SchemaMarkup';
+import { Locale } from '@/lib/i18n';
+import ImageHero from './ImageHero';
 import {
   SEO_COMPRESS,
   getCompressByFormat,
@@ -159,6 +162,96 @@ const FORMAT_FAQS: Record<string, ToolFAQ[]> = {
   ],
 };
 
+const seoImageEn: ToolSEOData = {
+  toolName: 'Image Compressor',
+  whatIsHeading: 'What is image compression?',
+  whatIsParagraphs: [
+    "Image compression reduces the file size of a picture while keeping it as visually close to the original as possible. Instead of uploading files to a remote server and waiting for processing, Pixvert's image compressor runs the entire operation locally in your browser using the Canvas API, so images never leave your device.",
+    'Most image formats carry redundant data — extra color precision, uncompressed pixel blocks, or metadata you never look at. A good compressor identifies exactly how much of that can be discarded before the difference becomes visible.',
+    "Compressing images reduces page load times, saves storage space, and improves user experience. Our tool processes everything locally — your files never leave your browser. Whether you're preparing files for a website, an email, or cloud storage, compressing images first means faster uploads, less bandwidth used, and quicker load times for anyone who opens them.",
+  ],
+  howToHeading: 'How to compress images online',
+  howToSteps: [
+    { title: 'Upload your files', description: 'drop your images into the box above, or click to browse — batch uploads are supported' },
+    { title: 'Click Compress All', description: 'compression runs instantly in your browser, no server round-trip involved' },
+    { title: 'Compare the result', description: 'check the new file size next to the original before downloading' },
+    { title: 'Download', description: 'save files individually or grab the whole batch at once as a ZIP' },
+  ],
+  useCasesHeading: 'When to compress image files',
+  useCases: [
+    { title: 'Faster websites', description: 'Smaller image files mean quicker page loads, which improves both user experience and search ranking.' },
+    { title: 'Email attachments', description: 'Fit photos under attachment size limits without switching to a file-sharing link.' },
+    { title: 'Storage savings', description: 'Free up space on your device or cloud drive by shrinking image files you no longer need at full resolution.' },
+    { title: 'Faster sharing', description: 'Send files over messaging apps or upload them to forms and marketplaces that enforce size limits.' },
+  ],
+  whyHeading: 'Why use Pixvert to compress images?',
+  whyReasons: [
+    { title: '100% local processing', description: 'compression happens entirely in your browser — files are never uploaded anywhere' },
+    { title: 'Batch support', description: 'compress multiple files in one pass and download them together as a ZIP' },
+    { title: 'No signup required', description: 'use the tool immediately without an account or email' },
+    { title: 'Free, with no hidden limits', description: 'no watermarks, no forced quality caps' },
+  ],
+  faqs: [
+    { question: 'Which image formats can I compress here?', answer: 'JPG, PNG, WebP, AVIF, GIF, HEIC, BMP, and TIFF are all supported. The tool detects the format automatically and applies the right compression strategy.' },
+    { question: 'Will compression change the format of my file?', answer: 'No, by default the output keeps the same format as the input. If you want to change format as well as compress, use the Image Converter instead.' },
+    { question: 'Is it safe to compress my images here?', answer: 'Yes. Everything happens locally in your browser using the Canvas API — your files are never uploaded to a server.' },
+    { question: 'Is there a file size limit?', answer: 'There is no hard limit set by Pixvert, but very large files depend on your device’s available memory to process smoothly.' },
+    { question: 'Can I compress multiple files at once?', answer: 'Yes, drop several files at once and click Compress All — every file is processed and can be downloaded individually or as a ZIP.' },
+    { question: 'Can I use the compressed images commercially?', answer: 'Yes, Pixvert only reduces file size — it does not alter your rights over the image or add any watermark.' },
+  ],
+  relatedTools: [
+    { href: '/tools/resize', label: 'Image Resizer', description: 'Resize images to exact pixel dimensions before compressing' },
+    { href: '/tools/watermark', label: 'Watermark Tool', description: 'Add a text watermark to your images' },
+    { href: '/tools/image-to-base64', label: 'Image to Base64', description: 'Encode a compressed image as a data URI' },
+  ],
+};
+
+const seoImageEs: ToolSEOData = {
+  toolName: 'Compresor de Imágenes',
+  whatIsHeading: '¿Qué es la compresión de imágenes?',
+  whatIsParagraphs: [
+    'La compresión de imágenes reduce el tamaño de archivo de una foto manteniéndola lo más parecida posible a la original en términos visuales. En vez de subir archivos a un servidor remoto y esperar el procesamiento, el compresor de Pixvert ejecuta toda la operación localmente en tu navegador usando la Canvas API, así que las imágenes nunca salen de tu dispositivo.',
+    'La mayoría de formatos de imagen cargan con datos redundantes — precisión de color extra, bloques de píxeles sin comprimir, o metadatos que nunca miras. Un buen compresor identifica exactamente cuánto de eso se puede descartar antes de que la diferencia se haga visible.',
+    'Comprimir imágenes reduce los tiempos de carga de página, ahorra espacio de almacenamiento y mejora la experiencia de usuario. Nuestra herramienta procesa todo localmente — tus archivos nunca salen de tu navegador. Ya sea que prepares archivos para una web, un email o almacenamiento en la nube, comprimir imágenes primero significa subidas más rápidas, menos ancho de banda usado y cargas más rápidas para quien las abra.',
+  ],
+  howToHeading: 'Cómo comprimir imágenes online',
+  howToSteps: [
+    { title: 'Sube tus archivos', description: 'arrastra tus imágenes a la zona de carga de arriba, o haz clic para explorar — se admiten cargas por lotes' },
+    { title: 'Haz clic en Comprimir Todo', description: 'la compresión ocurre al instante en tu navegador, sin ida y vuelta al servidor' },
+    { title: 'Compara el resultado', description: 'comprueba el nuevo tamaño de archivo junto al original antes de descargar' },
+    { title: 'Descarga', description: 'guarda archivos individualmente o descarga todo el lote de una vez como ZIP' },
+  ],
+  useCasesHeading: 'Cuándo comprimir archivos de imagen',
+  useCases: [
+    { title: 'Webs más rápidas', description: 'Archivos de imagen más ligeros significan cargas de página más rápidas, lo que mejora tanto la experiencia de usuario como el posicionamiento en buscadores.' },
+    { title: 'Archivos adjuntos de email', description: 'Ajusta fotos a los límites de tamaño de archivos adjuntos sin recurrir a un enlace para compartir archivos.' },
+    { title: 'Ahorro de almacenamiento', description: 'Libera espacio en tu dispositivo o nube reduciendo archivos de imagen que ya no necesitas en resolución completa.' },
+    { title: 'Compartir más rápido', description: 'Envía archivos por apps de mensajería o súbelos a formularios y marketplaces que exigen límites de tamaño.' },
+  ],
+  whyHeading: '¿Por qué usar Pixvert para comprimir imágenes?',
+  whyReasons: [
+    { title: 'Procesamiento 100% local', description: 'la compresión ocurre enteramente en tu navegador — los archivos nunca se suben a ningún sitio' },
+    { title: 'Soporte por lotes', description: 'comprime varios archivos de una vez y descárgalos juntos como ZIP' },
+    { title: 'Sin necesidad de registro', description: 'usa la herramienta al instante, sin cuenta ni email' },
+    { title: 'Gratis, sin límites ocultos', description: 'sin marcas de agua, sin límites de calidad forzados' },
+  ],
+  faqs: [
+    { question: '¿Qué formatos de imagen puedo comprimir aquí?', answer: 'JPG, PNG, WebP, AVIF, GIF, HEIC, BMP y TIFF son todos compatibles. La herramienta detecta el formato automáticamente y aplica la estrategia de compresión adecuada.' },
+    { question: '¿La compresión cambiará el formato de mi archivo?', answer: 'No, por defecto la salida mantiene el mismo formato que la entrada. Si quieres cambiar de formato además de comprimir, usa el Conversor de Imágenes en su lugar.' },
+    { question: '¿Es seguro comprimir mis imágenes aquí?', answer: 'Sí. Todo ocurre localmente en tu navegador usando la Canvas API — tus archivos nunca se suben a un servidor.' },
+    { question: '¿Hay un límite de tamaño de archivo?', answer: 'Pixvert no impone un límite estricto, pero archivos muy grandes dependen de la memoria disponible en tu dispositivo para procesarse sin problemas.' },
+    { question: '¿Puedo comprimir varios archivos a la vez?', answer: 'Sí, suelta varios archivos a la vez y haz clic en Comprimir Todo — cada archivo se procesa y puede descargarse individualmente o como ZIP.' },
+    { question: '¿Puedo usar las imágenes comprimidas comercialmente?', answer: 'Sí, Pixvert solo reduce el tamaño de archivo — no altera tus derechos sobre la imagen ni añade ninguna marca de agua.' },
+  ],
+  relatedTools: [
+    { href: '/tools/resize', label: 'Redimensionador de Imágenes', description: 'Redimensiona imágenes a dimensiones exactas antes de comprimir' },
+    { href: '/tools/watermark', label: 'Marca de Agua', description: 'Añade una marca de agua de texto a tus imágenes' },
+    { href: '/tools/image-to-base64', label: 'Imagen a Base64', description: 'Codifica una imagen comprimida como data URI' },
+  ],
+};
+
+const seoImageByLocale: Partial<Record<Locale, ToolSEOData>> = { en: seoImageEn, es: seoImageEs };
+
 export default async function CompressPage({ params }: Props) {
   const { format } = await params;
   const route = getCompressByFormat(format);
@@ -183,85 +276,83 @@ export default async function CompressPage({ params }: Props) {
 
   return (
     <div className="max-w-3xl mx-auto w-full px-4 py-10">
-      {/* Hero */}
-      <div className="text-center mb-10">
-        <div className="inline-flex items-center gap-2 mb-4 text-sm font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">
-          <svg className="w-4 h-4 text-[#6366F1]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-          </svg>
-          <span>Reduce file size — keep quality</span>
-        </div>
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900 dark:text-slate-50 mb-3">
-          {isGeneric ? (
-            <>
-              Compress{' '}
-              <span className="bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] bg-clip-text text-transparent">
-                Image
-              </span>{' '}
-              Online
-            </>
-          ) : (
-            <>
+      {isGeneric ? (
+        <ImageHero />
+      ) : (
+        <>
+          {/* Hero */}
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 mb-4 text-sm font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">
+              <svg className="w-4 h-4 text-[#6366F1]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+              </svg>
+              <span>Reduce file size — keep quality</span>
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900 dark:text-slate-50 mb-3">
               Compress{' '}
               <span className="bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] bg-clip-text text-transparent">
                 {route.label}
               </span>{' '}
               Online
-            </>
-          )}
-        </h1>
-        <p className="text-lg text-slate-500 dark:text-slate-400">
-          Free, instant, and private. Up to 60% smaller files — no upload required.
-        </p>
-      </div>
+            </h1>
+            <p className="text-lg text-slate-500 dark:text-slate-400">
+              Free, instant, and private. Up to 60% smaller files — no upload required.
+            </p>
+          </div>
 
-      {/* Privacy badge */}
-      <div className="flex items-center justify-center gap-2 text-sm text-[#10B981] bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-full px-4 py-1.5 self-center mb-6 w-fit mx-auto">
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-        </svg>
-        100% Local Processing — Your files never leave your browser
-      </div>
+          {/* Privacy badge */}
+          <div className="flex items-center justify-center gap-2 text-sm text-[#10B981] bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-full px-4 py-1.5 self-center mb-6 w-fit mx-auto">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+              </svg>
+              100% Local Processing — Your files never leave your browser
+          </div>
+        </>
+      )}
 
       <CompressorPreset />
 
-      <ToolSEOContent
-        toolName={`${route.label} Compressor`}
-        whatIsHeading={`What is ${isGeneric ? 'image' : label} compression?`}
-        whatIsParagraphs={[
-          `${isGeneric ? 'Image' : label} compression reduces the file size of a ${isGeneric ? 'picture' : `${label} file`} while keeping it as visually close to the original as possible. Instead of uploading files to a remote server and waiting for processing, Pixvert's ${label} compressor runs the entire operation locally in your browser using the Canvas API, so ${isGeneric ? 'images' : `${label} files`} never leave your device.`,
-          fact,
-          `${benefit} Whether you're preparing files for a website, an email, or cloud storage, compressing ${isGeneric ? 'images' : `${label} images`} first means faster uploads, less bandwidth used, and quicker load times for anyone who opens them.`,
-        ]}
-        howToHeading={`How to compress ${isGeneric ? 'images' : `${label} images`} online`}
-        howToSteps={[
-          { title: 'Upload your files', description: `drop your ${isGeneric ? 'images' : `${label} files`} into the box above, or click to browse — batch uploads are supported` },
-          { title: 'Click Compress All', description: 'compression runs instantly in your browser, no server round-trip involved' },
-          { title: 'Compare the result', description: 'check the new file size next to the original before downloading' },
-          { title: 'Download', description: 'save files individually or grab the whole batch at once as a ZIP' },
-        ]}
-        useCasesHeading={`When to compress ${isGeneric ? 'images' : `${label} files`}`}
-        useCases={[
-          { title: 'Faster websites', description: `Smaller ${isGeneric ? 'image' : label} files mean quicker page loads, which improves both user experience and search ranking.` },
-          { title: 'Email attachments', description: 'Fit photos under attachment size limits without switching to a file-sharing link.' },
-          { title: 'Storage savings', description: `Free up space on your device or cloud drive by shrinking ${isGeneric ? 'image' : label} files you no longer need at full resolution.` },
-          { title: 'Faster sharing', description: 'Send files over messaging apps or upload them to forms and marketplaces that enforce size limits.' },
-        ]}
-        whyHeading={`Why use Pixvert to compress ${isGeneric ? 'images' : label}?`}
-        whyReasons={[
-          { title: '100% local processing', description: 'compression happens entirely in your browser — files are never uploaded anywhere' },
-          { title: 'Batch support', description: 'compress multiple files in one pass and download them together as a ZIP' },
-          { title: 'No signup required', description: 'use the tool immediately without an account or email' },
-          { title: 'Free, with no hidden limits', description: 'no watermarks, no forced quality caps' },
-        ]}
-        faqs={faqs}
-        relatedTools={[
-          { href: '/tools/resize', label: 'Image Resizer', description: 'Resize images to exact pixel dimensions before compressing' },
-          { href: '/tools/watermark', label: 'Watermark Tool', description: 'Add a text watermark to your images' },
-          { href: '/tools/image-to-base64', label: 'Image to Base64', description: 'Encode a compressed image as a data URI' },
-          ...(isGeneric ? [] : [{ href: '/compress/image', label: 'Compress Image', description: 'Compress any image format in one place' }]),
-        ]}
-      />
+      {isGeneric ? (
+        <LocalizedToolSEO content={seoImageByLocale} />
+      ) : (
+        <ToolSEOContent
+          toolName={`${route.label} Compressor`}
+          whatIsHeading={`What is ${label} compression?`}
+          whatIsParagraphs={[
+            `${label} compression reduces the file size of a ${label} file while keeping it as visually close to the original as possible. Instead of uploading files to a remote server and waiting for processing, Pixvert's ${label} compressor runs the entire operation locally in your browser using the Canvas API, so ${label} files never leave your device.`,
+            fact,
+            `${benefit} Whether you're preparing files for a website, an email, or cloud storage, compressing ${label} images first means faster uploads, less bandwidth used, and quicker load times for anyone who opens them.`,
+          ]}
+          howToHeading={`How to compress ${label} images online`}
+          howToSteps={[
+            { title: 'Upload your files', description: `drop your ${label} files into the box above, or click to browse — batch uploads are supported` },
+            { title: 'Click Compress All', description: 'compression runs instantly in your browser, no server round-trip involved' },
+            { title: 'Compare the result', description: 'check the new file size next to the original before downloading' },
+            { title: 'Download', description: 'save files individually or grab the whole batch at once as a ZIP' },
+          ]}
+          useCasesHeading={`When to compress ${label} files`}
+          useCases={[
+            { title: 'Faster websites', description: `Smaller ${label} files mean quicker page loads, which improves both user experience and search ranking.` },
+            { title: 'Email attachments', description: 'Fit photos under attachment size limits without switching to a file-sharing link.' },
+            { title: 'Storage savings', description: `Free up space on your device or cloud drive by shrinking ${label} files you no longer need at full resolution.` },
+            { title: 'Faster sharing', description: 'Send files over messaging apps or upload them to forms and marketplaces that enforce size limits.' },
+          ]}
+          whyHeading={`Why use Pixvert to compress ${label}?`}
+          whyReasons={[
+            { title: '100% local processing', description: 'compression happens entirely in your browser — files are never uploaded anywhere' },
+            { title: 'Batch support', description: 'compress multiple files in one pass and download them together as a ZIP' },
+            { title: 'No signup required', description: 'use the tool immediately without an account or email' },
+            { title: 'Free, with no hidden limits', description: 'no watermarks, no forced quality caps' },
+          ]}
+          faqs={faqs}
+          relatedTools={[
+            { href: '/tools/resize', label: 'Image Resizer', description: 'Resize images to exact pixel dimensions before compressing' },
+            { href: '/tools/watermark', label: 'Watermark Tool', description: 'Add a text watermark to your images' },
+            { href: '/tools/image-to-base64', label: 'Image to Base64', description: 'Encode a compressed image as a data URI' },
+            { href: '/compress/image', label: 'Compress Image', description: 'Compress any image format in one place' },
+          ]}
+        />
+      )}
 
       <SchemaMarkup
         name={`${route.label} Compressor`}

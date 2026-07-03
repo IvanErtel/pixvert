@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import QrGeneratorTool from './QrGeneratorTool';
-import ToolSEOContent, { type ToolSEOData } from '@/components/ToolSEOContent';
+import { type ToolSEOData } from '@/components/ToolSEOContent';
+import LocalizedToolSEO from '@/components/LocalizedToolSEO';
 import SchemaMarkup from '@/components/SchemaMarkup';
+import { Locale } from '@/lib/i18n';
 
 export const metadata: Metadata = {
   title: 'QR Code Generator Free Online — Pixvert',
@@ -13,7 +15,7 @@ export const metadata: Metadata = {
   },
 };
 
-const seo: ToolSEOData = {
+const seoEn: ToolSEOData = {
   toolName: 'QR Code Generator',
   whatIsHeading: 'What is a QR code generator?',
   whatIsParagraphs: [
@@ -59,19 +61,67 @@ const seo: ToolSEOData = {
   ],
 };
 
+const seoEs: ToolSEOData = {
+  toolName: 'Generador de Códigos QR',
+  whatIsHeading: '¿Qué es un generador de códigos QR?',
+  whatIsParagraphs: [
+    'Un generador de códigos QR convierte un fragmento de texto — una URL, una contraseña de Wi-Fi, un email, un número de teléfono — en un código de barras cuadrado escaneable que cualquier cámara de móvil puede leer al instante. El generador de Pixvert crea estos códigos directamente en tu navegador, sin enviar datos a ningún servidor ni necesitar cuenta.',
+    'Más allá del cuadrado blanco y negro básico, este generador te permite personalizar los colores de primer plano y fondo, ajustar el tamaño en píxeles y elegir el nivel de corrección de errores, que determina cuánto del código puede estar dañado u oculto y aun así escanearse correctamente. Una corrección más alta es útil si vas a imprimir el código pequeño o añadir un logo encima.',
+    'Los códigos QR se usan por todas partes hoy: menús de restaurante, envases de productos, tarjetas de visita, entradas de eventos y enlaces de pago. Generar uno gratis online significa que puedes crear tantos como necesites — para uso personal o comercial — sin pagar una suscripción ni lidiar con límites de uso.',
+  ],
+  howToHeading: 'Cómo generar un código QR',
+  howToSteps: [
+    { title: 'Introduce tu contenido', description: 'escribe o pega la URL, texto, email o teléfono al que quieres que apunte el código QR' },
+    { title: 'Personaliza la apariencia', description: 'elige los colores de primer plano y fondo y define el tamaño en píxeles' },
+    { title: 'Define el nivel de corrección de errores', description: 'elige una corrección más alta si el código se imprimirá pequeño o se combinará con un logo' },
+    { title: 'Previsualiza y descarga', description: 'el código QR se actualiza en vivo — descárgalo como PNG cuando se vea bien' },
+  ],
+  useCasesHeading: 'Cuándo usar un código QR',
+  useCases: [
+    { title: 'Menús de restaurante', description: 'Enlaza un atril de mesa o pegatina a tu menú digital en vez de imprimir nuevos menús cada vez que cambien los precios.' },
+    { title: 'Tarjetas de visita y flyers', description: 'Deja que la gente escanee directo a tu web, portafolio o datos de contacto en vez de escribir una URL.' },
+    { title: 'Compartir Wi-Fi', description: 'Genera un código que los invitados puedan escanear para unirse a tu red Wi-Fi sin escribir la contraseña.' },
+    { title: 'Entradas y check-ins de eventos', description: 'Codifica un enlace o ID único para escaneo rápido en la entrada.' },
+    { title: 'Envases de producto', description: 'Dirige a los clientes a instrucciones, registro de garantía o tu tienda online.' },
+  ],
+  whyHeading: '¿Por qué usar Pixvert para crear códigos QR?',
+  whyReasons: [
+    { title: 'Generación 100% local', description: 'tu contenido se codifica directamente en tu navegador — nada se envía a un servidor ni se registra' },
+    { title: 'Colores y tamaños personalizados', description: 'combina con tu marca en vez de usar un cuadrado genérico en blanco y negro' },
+    { title: 'Sin registro, sin límites', description: 'genera tantos códigos QR como necesites, gratis, sin cuenta' },
+    { title: 'Descarga PNG instantánea', description: 'obtén un archivo de imagen listo para usar en impresión o digital en segundos' },
+  ],
+  faqs: [
+    { question: '¿Estos códigos QR caducan?', answer: 'No. Como el contenido se codifica directamente en el propio código (no es un enlace de redirección alojado por Pixvert), el código QR funciona mientras el contenido subyacente — como la URL — siga siendo válido.' },
+    { question: '¿Puedo usar estos códigos QR comercialmente?', answer: 'Sí, no hay restricciones. Puedes usar los códigos QR generados en productos, materiales de marketing o cualquier proyecto comercial.' },
+    { question: '¿Qué es el nivel de corrección de errores y cuál debo elegir?', answer: 'La corrección de errores permite que un código QR siga escaneándose aunque parte de él esté dañado u oculto. Usa un nivel más alto si vas a imprimir pequeño o añadir un logo encima; usa uno más bajo para máxima capacidad de datos.' },
+    { question: '¿Mis datos están seguros al generar un código QR aquí?', answer: 'Sí. El código QR se genera enteramente en tu navegador — el texto o URL que introduces nunca se envía ni se guarda en ningún servidor.' },
+    { question: '¿Qué puedo codificar en un código QR?', answer: 'URLs, texto plano, direcciones de email, números de teléfono, credenciales Wi-Fi y más — cualquier cosa que quepa dentro de los límites de capacidad de datos del código QR.' },
+    { question: '¿Por qué no escanea mi código QR?', answer: 'Esto suele deberse a poco contraste entre los colores de primer plano y fondo, o a un tamaño demasiado pequeño para la cantidad de datos codificados. Prueba a aumentar el tamaño o usar colores con más contraste.' },
+  ],
+  relatedTools: [
+    { href: '/tools/password-generator', label: 'Generador de Contraseñas', description: 'Genera contraseñas fuertes y aleatorias con Web Crypto API' },
+    { href: '/tools/uuid-generator', label: 'Generador de UUID', description: 'Genera identificadores únicos (UUID v4)' },
+    { href: '/tools/url-encoder', label: 'Codificador de URL', description: 'Codifica o decodifica URLs antes de ponerlas en un código QR' },
+    { href: '/tools/image-to-base64', label: 'Imagen a Base64', description: 'Codifica una imagen como data URI' },
+  ],
+};
+
+const seoByLocale: Partial<Record<Locale, ToolSEOData>> = { en: seoEn, es: seoEs };
+
 export default function QrGeneratorPage() {
   return (
     <>
       <QrGeneratorTool />
-      <ToolSEOContent {...seo} />
+      <LocalizedToolSEO content={seoByLocale} />
       <SchemaMarkup
-        name={seo.toolName}
+        name={seoEn.toolName}
         url="https://pixvert-one.vercel.app/tools/qr-generator"
         description={metadata.description as string}
         features={['Custom colors', 'Custom size', 'Error correction levels', 'Local generation', 'PNG download']}
-        howToName={seo.howToHeading}
-        howToSteps={seo.howToSteps}
-        faqs={seo.faqs}
+        howToName={seoEn.howToHeading}
+        howToSteps={seoEn.howToSteps}
+        faqs={seoEn.faqs}
       />
     </>
   );

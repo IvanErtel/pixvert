@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import VatCalculatorTool from './VatCalculatorTool';
-import ToolSEOContent, { type ToolSEOData } from '@/components/ToolSEOContent';
+import { type ToolSEOData } from '@/components/ToolSEOContent';
+import LocalizedToolSEO from '@/components/LocalizedToolSEO';
 import SchemaMarkup from '@/components/SchemaMarkup';
+import { Locale } from '@/lib/i18n';
 
 export const metadata: Metadata = {
   title: 'VAT Calculator Spain Free — IVA 21% 10% 4% | Pixvert',
@@ -13,7 +15,7 @@ export const metadata: Metadata = {
   },
 };
 
-const seo: ToolSEOData = {
+const seoEn: ToolSEOData = {
   toolName: 'VAT Calculator Spain',
   whatIsHeading: 'What is a VAT (IVA) calculator for Spain?',
   whatIsParagraphs: [
@@ -59,19 +61,67 @@ const seo: ToolSEOData = {
   ],
 };
 
+const seoEs: ToolSEOData = {
+  toolName: 'Calculadora de IVA España',
+  whatIsHeading: '¿Qué es una calculadora de IVA para España?',
+  whatIsParagraphs: [
+    'Una calculadora de IVA suma o resta el Impuesto sobre el Valor Añadido español de un precio. La calculadora de Pixvert admite los tres tipos de IVA español: el tipo general del 21% aplicado a la mayoría de bienes y servicios, el tipo reducido del 10% para artículos como hostelería y transporte, y el tipo superreducido del 4% para bienes de primera necesidad como el pan, la leche y los libros.',
+    'La herramienta funciona en ambas direcciones: introduce un precio sin IVA para ver el total con el impuesto añadido, o introduce un precio que ya incluye IVA para extraer el importe del impuesto y la base imponible. Este segundo cálculo — pasar de un precio con IVA incluido a la base — es algo que se necesita con frecuencia pero es fácil hacer mal a mano, ya que no puedes simplemente restar el porcentaje del total.',
+    'Los autónomos, pequeños empresarios y cualquiera que emita o revise facturas en España dependen habitualmente de cálculos de IVA rápidos y precisos. Esta calculadora da resultados instantáneos sin necesidad de recordar las fórmulas ni abrir una hoja de cálculo.',
+  ],
+  howToHeading: 'Cómo calcular el IVA',
+  howToSteps: [
+    { title: 'Introduce tu precio', description: 'escribe el precio base (sin IVA) o el precio total (con IVA ya incluido)' },
+    { title: 'Selecciona el tipo de IVA', description: 'elige 21% (general), 10% (reducido) o 4% (superreducido) según el producto o servicio' },
+    { title: 'Elige la dirección', description: 'suma el IVA a un precio base, o extráelo de un precio total' },
+    { title: 'Lee el desglose', description: 've la base imponible, el importe del IVA y el total, todo calculado al instante' },
+  ],
+  useCasesHeading: 'Cuándo usar una calculadora de IVA',
+  useCases: [
+    { title: 'Emitir facturas como autónomo', description: 'Calcula rápidamente el IVA a añadir al precio de un servicio antes de enviar una factura.' },
+    { title: 'Revisar un recibo o factura', description: 'Verifica que el IVA cobrado en una compra coincide con el tipo correcto para esa categoría de producto.' },
+    { title: 'Fijar precios de venta', description: 'Calcula qué precio cobrar con IVA incluido para alcanzar un ingreso objetivo antes de impuestos.' },
+    { title: 'Presupuestar gastos de negocio', description: 'Extrae la parte deducible de IVA de un gasto empresarial para contabilidad.' },
+    { title: 'Comparar precios entre categorías', description: 'Entiende cómo los distintos tipos reducidos de IVA afectan al precio final de bienes concretos.' },
+  ],
+  whyHeading: '¿Por qué usar la calculadora de IVA de Pixvert?',
+  whyReasons: [
+    { title: 'Los tres tipos de IVA español', description: '21%, 10% y 4% cubiertos en una sola herramienta' },
+    { title: 'Funciona en ambos sentidos', description: 'suma el IVA a un precio base o extráelo de un precio total' },
+    { title: '100% privado y local', description: 'los cálculos ocurren en tu navegador, nada se envía a un servidor' },
+    { title: 'Gratis e instantáneo', description: 'sin registro, sin límites, los resultados se actualizan mientras escribes' },
+  ],
+  faqs: [
+    { question: '¿Cuáles son los tipos de IVA actuales en España?', answer: 'España aplica tres tipos de IVA: 21% (tipo general, la mayoría de bienes y servicios), 10% (tipo reducido, p. ej. hostelería y transporte de pasajeros) y 4% (tipo superreducido, p. ej. alimentos básicos, libros y medicamentos).' },
+    { question: '¿Cómo quito el IVA de un precio total?', answer: 'Divide el precio total entre 1 más el tipo de IVA en decimal (por ejemplo, divide entre 1,21 para un IVA del 21%) para obtener el precio base, y luego resta la base del total para obtener el importe del IVA. Esta calculadora hace eso automáticamente.' },
+    { question: '¿Por qué no puedo simplemente restar el 21% del total para obtener el precio base?', answer: 'Porque el 21% se calculó sobre el precio base, no sobre el total. Restar el 21% del total sobrecorrige — necesitas dividir entre 1,21 en su lugar, que es lo que hace correctamente esta calculadora.' },
+    { question: '¿Esta calculadora sirve solo para España?', answer: 'Está construida en torno a los tipos específicos de IVA usados en España (21%, 10%, 4%). Para tipos de IVA o impuestos sobre ventas de otros países, necesitarías una calculadora con los porcentajes específicos de ese país.' },
+    { question: '¿Mis datos de precio se envían a algún sitio?', answer: 'No, todos los cálculos ocurren localmente en tu navegador. Nada de lo que introduces se transmite a un servidor ni se guarda.' },
+    { question: '¿Qué tipo de IVA aplica a mi producto o servicio?', answer: 'Depende de la categoría definida por la ley fiscal española — la mayoría de bienes y servicios caen bajo el tipo general del 21%, con tipos reducidos aplicando a categorías específicas. Consulta la guía oficial de la AEAT si no estás seguro de qué tipo aplica a tu caso.' },
+  ],
+  relatedTools: [
+    { href: '/tools/salary-calculator', label: 'Calculadora de Salario', description: 'Calcula el salario neto en España tras IRPF y Seguridad Social' },
+    { href: '/tools/mortgage-calculator', label: 'Calculadora de Hipoteca', description: 'Estima tu cuota mensual de hipoteca' },
+    { href: '/tools/percentage-calculator', label: 'Calculadora de Porcentajes', description: 'Calcula porcentajes, aumentos y descuentos' },
+    { href: '/tools/tip-calculator', label: 'Calculadora de Propinas', description: 'Divide una cuenta y calcula propinas' },
+  ],
+};
+
+const seoByLocale: Partial<Record<Locale, ToolSEOData>> = { en: seoEn, es: seoEs };
+
 export default function VatCalculatorPage() {
   return (
     <>
       <VatCalculatorTool />
-      <ToolSEOContent {...seo} />
+      <LocalizedToolSEO content={seoByLocale} />
       <SchemaMarkup
-        name={seo.toolName}
+        name={seoEn.toolName}
         url="https://pixvert-one.vercel.app/tools/vat-calculator"
         description={metadata.description as string}
         features={['21%, 10%, 4% IVA rates', 'Add or extract VAT', 'Instant results', 'Local processing']}
-        howToName={seo.howToHeading}
-        howToSteps={seo.howToSteps}
-        faqs={seo.faqs}
+        howToName={seoEn.howToHeading}
+        howToSteps={seoEn.howToSteps}
+        faqs={seoEn.faqs}
       />
     </>
   );

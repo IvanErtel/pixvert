@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
 import Converter from '@/components/Converter';
-import ToolSEOContent, { type ToolSEOData } from '@/components/ToolSEOContent';
+import { type ToolSEOData } from '@/components/ToolSEOContent';
+import LocalizedToolSEO from '@/components/LocalizedToolSEO';
+import LocalizedHero, { type HeroContent } from '@/components/LocalizedHero';
+import LocalizedFeatureGrid, { type FeatureCard } from '@/components/LocalizedFeatureGrid';
 import SchemaMarkup from '@/components/SchemaMarkup';
+import { Locale } from '@/lib/i18n';
 
 export const metadata: Metadata = {
   title: 'Resize Image Online Free — Pixvert',
@@ -18,7 +22,35 @@ export const metadata: Metadata = {
   },
 };
 
-const seo: ToolSEOData = {
+const heroByLocale: Partial<Record<Locale, HeroContent>> = {
+  en: {
+    title: 'Resize Images Online — Free',
+    subtitle:
+      'Set exact pixel dimensions, lock the aspect ratio, and batch resize multiple images at once. 100% local processing — your files never leave your device.',
+    tags: ['Batch resize', 'Lock aspect ratio', 'Any format', 'No upload'],
+  },
+  es: {
+    title: 'Redimensionar Imágenes Online — Gratis',
+    subtitle:
+      'Define dimensiones exactas en píxeles, bloquea la proporción y redimensiona varias imágenes a la vez. Procesamiento 100% local — tus archivos nunca salen de tu dispositivo.',
+    tags: ['Redimensión por lotes', 'Bloquear proporción', 'Cualquier formato', 'Sin subida'],
+  },
+};
+
+const featuresByLocale: Partial<Record<Locale, FeatureCard[]>> = {
+  en: [
+    { icon: '📐', title: 'Exact dimensions', description: 'Enter width and height in pixels. The converter scales precisely to your target size.' },
+    { icon: '🔒', title: 'Aspect ratio lock', description: 'Enter one dimension and the other adjusts automatically to keep your image proportional.' },
+    { icon: '⚡', title: 'Batch processing', description: 'Drop multiple images at once and resize them all together. Download as a ZIP file.' },
+  ],
+  es: [
+    { icon: '📐', title: 'Dimensiones exactas', description: 'Introduce ancho y alto en píxeles. El conversor escala con precisión al tamaño que definas.' },
+    { icon: '🔒', title: 'Bloqueo de proporción', description: 'Introduce una dimensión y la otra se ajusta automáticamente para mantener la proporción de tu imagen.' },
+    { icon: '⚡', title: 'Procesamiento por lotes', description: 'Arrastra varias imágenes a la vez y redimensiónalas todas juntas. Descárgalas como archivo ZIP.' },
+  ],
+};
+
+const seoEn: ToolSEOData = {
   toolName: 'Image Resizer',
   whatIsHeading: 'What is an image resizer?',
   whatIsParagraphs: [
@@ -66,66 +98,76 @@ const seo: ToolSEOData = {
   ],
 };
 
+const seoEs: ToolSEOData = {
+  toolName: 'Redimensionador de Imágenes',
+  whatIsHeading: '¿Qué es un redimensionador de imágenes?',
+  whatIsParagraphs: [
+    'Un redimensionador de imágenes cambia las dimensiones en píxeles de una foto o gráfico — haciéndola más ancha, más estrecha, más alta o más baja — sin recortar contenido del encuadre. El redimensionador de Pixvert te permite escribir un ancho y alto exactos en píxeles, o bloquear la proporción para que una dimensión se ajuste automáticamente cuando cambies la otra.',
+    'Esta herramienta es útil siempre que una imagen necesite cumplir un requisito de tamaño específico: una foto de producto para una tienda online, una foto de perfil con dimensiones fijas, o un banner que debe encajar exactamente en el diseño de una web. En vez de adivinar dimensiones en un programa de diseño, defines los números directamente y obtienes un resultado exacto en píxeles.',
+    'El redimensionador funciona enteramente con la Canvas API de tu navegador, lo que significa que puede escalar una imagen o un lote entero a la vez. No hay ningún paso de procesamiento en servidor, así que redimensionar es casi instantáneo incluso para archivos grandes, y las imágenes nunca salen de tu dispositivo.',
+  ],
+  howToHeading: 'Cómo redimensionar una imagen online',
+  howToSteps: [
+    { title: 'Sube tu imagen o imágenes', description: 'arrastra archivos a la zona de carga, o haz clic para explorar — se admite redimensión por lotes' },
+    { title: 'Introduce el ancho y alto deseados', description: 'escribe valores exactos en píxeles, o bloquea la proporción para que el alto se ajuste automáticamente al cambiar el ancho' },
+    { title: 'Previsualiza el resultado', description: 'comprueba las nuevas dimensiones antes de descargar' },
+    { title: 'Descarga', description: 'guarda una sola imagen directamente, o descarga todo el lote como archivo ZIP' },
+  ],
+  useCasesHeading: 'Cuándo usar un redimensionador de imágenes',
+  useCases: [
+    { title: 'Fotos de producto para e-commerce', description: 'Marketplaces como Amazon, Etsy o Shopify suelen exigir dimensiones específicas en píxeles para las fotos de producto — redimensiona un lote entero antes de subirlas.' },
+    { title: 'Redes sociales y fotos de perfil', description: 'Los avatares y fotos de portada en la mayoría de plataformas necesitan dimensiones cuadradas o rectangulares exactas para evitar recortes incómodos.' },
+    { title: 'Rendimiento web', description: 'Servir una imagen en su tamaño de visualización en vez de su resolución original reduce el peso de la página y acelera la carga.' },
+    { title: 'Archivos adjuntos de email', description: 'Reduce fotos grandes a un tamaño razonable antes de adjuntarlas a un email para evitar superar los límites de tamaño.' },
+    { title: 'Plantillas de impresión y diseño', description: 'Encaja una foto en una plantilla con dimensiones predefinidas en píxeles, como un flyer, miniatura o banner publicitario.' },
+  ],
+  whyHeading: '¿Por qué usar Pixvert para redimensionar imágenes?',
+  whyReasons: [
+    { title: 'Procesamiento 100% local', description: 'el redimensionado ocurre en tu navegador con la Canvas API — los archivos nunca se suben a un servidor' },
+    { title: 'Soporte por lotes', description: 'redimensiona varias imágenes de una vez y descárgalas juntas como ZIP' },
+    { title: 'Sin necesidad de registro', description: 'usa la herramienta al instante, sin cuenta ni email' },
+    { title: 'Compatible con cualquier formato común', description: 'PNG, JPG, WebP y más son compatibles tanto de entrada como de salida' },
+  ],
+  faqs: [
+    { question: '¿Redimensionar reduce la calidad de la imagen?', answer: 'Hacer una imagen más pequeña rara vez causa pérdida de calidad visible. Hacerla mucho más grande que su resolución original puede introducir desenfoque, ya que la herramienta tiene que interpolar píxeles nuevos que no estaban en la imagen original.' },
+    { question: '¿Puedo redimensionar varias imágenes a la vez?', answer: 'Sí. Suelta varios archivos en la herramienta y define las dimensiones objetivo una sola vez — todas las imágenes del lote se redimensionan igual y pueden descargarse juntas como ZIP.' },
+    { question: '¿Redimensionar cambiará la proporción y distorsionará mi imagen?', answer: 'Solo si defines ancho y alto de forma independiente sin bloquear la proporción. Activa el bloqueo de proporción para mantener las proporciones correctas y evitar estiramientos.' },
+    { question: '¿Cuál es el tamaño máximo de archivo que puedo redimensionar?', answer: 'Pixvert no impone un límite estricto, pero archivos muy grandes (más de 20-30 MB) pueden ir lentos según tu dispositivo, ya que el procesamiento ocurre localmente en tu navegador.' },
+    { question: '¿Se sube mi imagen a algún lado?', answer: 'No. Todo el redimensionado ocurre localmente usando la Canvas API. Tus imágenes nunca se envían a un servidor.' },
+    { question: '¿Puedo usar las imágenes redimensionadas comercialmente?', answer: 'Sí, no hay restricciones sobre cómo uses el resultado. Pixvert solo procesa los píxeles — no reclama ningún derecho sobre tus imágenes.' },
+  ],
+  relatedTools: [
+    { href: '/compress/image', label: 'Compresor de Imágenes', description: 'Reduce el tamaño de archivo después de redimensionar tu imagen' },
+    { href: '/tools/rotate', label: 'Rotar Imagen', description: 'Rota o voltea imágenes con la Canvas API' },
+    { href: '/tools/watermark', label: 'Marca de Agua', description: 'Añade una marca de agua de texto a tus imágenes redimensionadas' },
+    { href: '/tools/crop', label: 'Recortar Imagen', description: 'Recorta un área específica de tu foto' },
+    { href: '/convert/png-to-webp', label: 'PNG a WebP', description: 'Convierte el formato tras redimensionar para archivos más ligeros' },
+    { href: '/tools/image-to-base64', label: 'Imagen a Base64', description: 'Codifica tu imagen redimensionada como data URI' },
+  ],
+};
+
+const seoByLocale: Partial<Record<Locale, ToolSEOData>> = { en: seoEn, es: seoEs };
+
 export default function ResizePage() {
   return (
     <>
-    <div className="max-w-3xl mx-auto w-full px-4 py-10">
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-3">
-          Resize Images Online — Free
-        </h1>
-        <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto">
-          Set exact pixel dimensions, lock the aspect ratio, and batch resize multiple
-          images at once. 100% local processing — your files never leave your device.
-        </p>
-        <div className="flex flex-wrap justify-center gap-3 mt-4">
-          {['Batch resize', 'Lock aspect ratio', 'Any format', 'No upload'].map((tag) => (
-            <span
-              key={tag}
-              className="text-xs font-medium px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
+      <div className="max-w-3xl mx-auto w-full px-4 py-10">
+        <LocalizedHero content={heroByLocale} />
+
+        <Converter />
+
+        <LocalizedFeatureGrid content={featuresByLocale} />
       </div>
-
-      <Converter />
-
-      <section className="mt-12 grid sm:grid-cols-3 gap-6 text-sm">
-        <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-5">
-          <div className="text-2xl mb-2">📐</div>
-          <h2 className="font-semibold text-slate-800 dark:text-slate-200 mb-1">Exact dimensions</h2>
-          <p className="text-slate-500 dark:text-slate-400">
-            Enter width and height in pixels. The converter scales precisely to your target size.
-          </p>
-        </div>
-        <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-5">
-          <div className="text-2xl mb-2">🔒</div>
-          <h2 className="font-semibold text-slate-800 dark:text-slate-200 mb-1">Aspect ratio lock</h2>
-          <p className="text-slate-500 dark:text-slate-400">
-            Enter one dimension and the other adjusts automatically to keep your image proportional.
-          </p>
-        </div>
-        <div className="rounded-xl border border-slate-200 dark:border-slate-800 p-5">
-          <div className="text-2xl mb-2">⚡</div>
-          <h2 className="font-semibold text-slate-800 dark:text-slate-200 mb-1">Batch processing</h2>
-          <p className="text-slate-500 dark:text-slate-400">
-            Drop multiple images at once and resize them all together. Download as a ZIP file.
-          </p>
-        </div>
-      </section>
-    </div>
-    <ToolSEOContent {...seo} />
-    <SchemaMarkup
-      name={seo.toolName}
-      url="https://pixvert-one.vercel.app/tools/resize"
-      description={metadata.description as string}
-      features={['Exact pixel resizing', 'Aspect ratio lock', 'Batch processing', 'Local browser processing', 'No signup required']}
-      howToName={seo.howToHeading}
-      howToSteps={seo.howToSteps}
-      faqs={seo.faqs}
-    />
+      <LocalizedToolSEO content={seoByLocale} />
+      <SchemaMarkup
+        name={seoEn.toolName}
+        url="https://pixvert-one.vercel.app/tools/resize"
+        description={metadata.description as string}
+        features={['Exact pixel resizing', 'Aspect ratio lock', 'Batch processing', 'Local browser processing', 'No signup required']}
+        howToName={seoEn.howToHeading}
+        howToSteps={seoEn.howToSteps}
+        faqs={seoEn.faqs}
+      />
     </>
   );
 }
