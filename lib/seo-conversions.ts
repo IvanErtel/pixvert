@@ -113,6 +113,8 @@ export function formatLabel(ext: string): string {
   return ext.toUpperCase();
 }
 
+export const BASE_URL = 'https://pixvert-one.vercel.app';
+
 export interface CompressRoute {
   format: string;
   label: string;

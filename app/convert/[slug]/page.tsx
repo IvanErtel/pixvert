@@ -4,6 +4,7 @@ import Link from 'next/link';
 import ConverterPreset from '@/components/ConverterPreset';
 import ToolSEOContent, { type ToolFAQ, type ToolUseCase } from '@/components/ToolSEOContent';
 import SchemaMarkup from '@/components/SchemaMarkup';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import { SEO_CONVERSIONS, getConversionBySlug, getRelatedConversions, formatLabel } from '@/lib/seo-conversions';
 
 interface Props {
@@ -194,26 +195,59 @@ const FORMAT_INFO: Record<string, FormatInfo> = {
   },
 };
 
+/** Extra FAQ genuinely specific to this format pair — avoids identical boilerplate across every page. */
+function buildSpecialFaq(from: string, to: string): ToolFAQ | null {
+  if (from === 'gif' && to !== 'gif') {
+    return to === 'webp'
+      ? { question: 'Will my GIF animation still play after converting to WebP?', answer: 'Yes — WebP supports animation, so all frames and timing from your GIF are preserved in the output file.' }
+      : { question: `Will my GIF animation still play after converting to ${formatLabel(to)}?`, answer: `No — ${formatLabel(to)} is a static image format, so only the first frame of the GIF is kept in the output. If you need to keep the animation, convert to WebP instead.` };
+  }
+  if (to === 'gif' && from !== 'gif') {
+    return { question: 'Will the resulting GIF be animated?', answer: `No, a single ${formatLabel(from)} image converts to a single static GIF frame. GIF only becomes animated when multiple frames are combined, which isn't part of a one-to-one format conversion.` };
+  }
+  if (from === 'heic') {
+    return { question: "Does converting from HEIC keep my photo's original quality?", answer: `The conversion decodes the HEIC file at full resolution before re-encoding it as ${formatLabel(to)}, so no extra quality is lost beyond what the ${formatLabel(to)} format itself introduces.` };
+  }
+  if (to === 'ico') {
+    return { question: 'What sizes are included in the ICO file?', answer: `The output ICO bundles three resolutions — 16×16, 32×32, and 48×48 — generated from your ${formatLabel(from)} source in a single file, ready to use as a favicon or app icon.` };
+  }
+  if (to === 'tiff') {
+    return { question: 'Is this conversion suitable for professional print workflows?', answer: `Yes — the TIFF output is uncompressed and lossless, which makes it suitable for print and archiving, though the file will be considerably larger than your original ${formatLabel(from)}.` };
+  }
+  if (from === 'tiff') {
+    return { question: 'Should I keep my original TIFF file after converting?', answer: `Yes. Converting TIFF to ${formatLabel(to)} is meant for web or everyday use — keep the original TIFF as your archival master copy for print or professional editing.` };
+  }
+  return null;
+}
+
 function buildFaqs(from: string, to: string, fromInfo: FormatInfo, toInfo: FormatInfo): ToolFAQ[] {
   const FROM = formatLabel(from);
   const TO = formatLabel(to);
 
   const qualityAnswer = toInfo.lossy
-    ? `The converter uses a high-quality output setting by default, so any quality loss when converting to ${TO} is minimal and generally not visible to the eye.`
-    : `Since ${TO} is a lossless format, no additional quality is lost during this conversion. If your original ${FROM} file was already compressed with quality loss, that original loss can\'t be recovered, but nothing further is discarded.`;
+    ? `The converter uses a high-quality output setting by default, so any quality loss when converting ${FROM} to ${TO} is minimal and generally not visible to the eye.`
+    : `Since ${TO} is a lossless format, no additional quality is lost when converting your ${FROM} file. If the original ${FROM} was already compressed with quality loss, that loss can\'t be recovered, but nothing further is discarded.`;
 
   const transparencyAnswer = toInfo.transparency
     ? `Yes, ${TO} supports transparency, so any transparent areas in your ${FROM} file are preserved in the converted image.`
-    : `No, ${TO} does not support transparency. Any transparent areas in your ${FROM} file will be filled with a solid background (typically white) during conversion.`;
+    : `No, ${TO} does not support transparency. Any transparent areas in your ${FROM} file will be filled with a solid background (typically white) when converted to ${TO}.`;
 
-  return [
+  const faqs: ToolFAQ[] = [
     { question: `Will converting ${FROM} to ${TO} reduce image quality?`, answer: qualityAnswer },
     { question: `Does ${TO} support transparency?`, answer: transparencyAnswer },
-    { question: 'Is it safe to convert my images here?', answer: 'Yes. All conversion happens locally in your browser using the Canvas API — your files are never uploaded to a server.' },
-    { question: 'Can I convert multiple files at once?', answer: 'Yes, drop several files at once and click Convert All — every file is processed and can be downloaded individually or as a ZIP.' },
-    { question: 'Is there a file size limit?', answer: 'There is no hard limit set by Pixvert, but very large files depend on your device\'s available memory to process smoothly.' },
-    { question: 'Can I use the converted images commercially?', answer: 'Yes, Pixvert only changes the file format — it does not alter your rights over the image or add any watermark.' },
+    { question: `Is it safe to convert ${FROM} files to ${TO} here?`, answer: `Yes. The whole ${FROM} to ${TO} conversion runs locally in your browser using the Canvas API — your ${FROM} files are never uploaded to a server.` },
+    { question: `Can I convert several ${FROM} files to ${TO} at once?`, answer: `Yes, drop multiple ${FROM} files at once and click Convert All — each one is converted to ${TO} and can be downloaded individually or as a ZIP.` },
   ];
+
+  const special = buildSpecialFaq(from, to);
+  if (special) faqs.push(special);
+
+  faqs.push(
+    { question: `Is there a size limit for ${FROM} uploads?`, answer: `There's no hard limit set by Pixvert for ${FROM} files, but very large files depend on your device's available memory to convert smoothly.` },
+    { question: `Can I use the ${TO} output commercially after converting?`, answer: `Yes, converting ${FROM} to ${TO} only changes the file format — it doesn't alter your rights over the image or add a watermark.` },
+  );
+
+  return faqs;
 }
 
 function buildUseCases(from: string, to: string, fromInfo: FormatInfo, toInfo: FormatInfo): ToolUseCase[] {
@@ -246,6 +280,14 @@ export default async function ConvertPage({ params }: Props) {
 
   return (
     <div className="max-w-3xl mx-auto w-full px-4 py-10">
+      <Breadcrumbs
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'Tools', href: '/tools' },
+          { label: `${from} to ${to}` },
+        ]}
+      />
+
       {/* Page-specific hero */}
       <div className="text-center mb-10">
         <div className="inline-flex items-center gap-2 mb-4 text-sm font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">
@@ -295,10 +337,10 @@ export default async function ConvertPage({ params }: Props) {
         useCases={useCases}
         whyHeading={`Why use Pixvert to convert ${from} to ${to}?`}
         whyReasons={[
-          { title: '100% local processing', description: 'conversion happens entirely in your browser — files are never uploaded anywhere' },
-          { title: 'Batch support', description: 'convert multiple files in one pass and download them together as a ZIP' },
+          { title: '100% local processing', description: `the ${from} to ${to} conversion runs entirely in your browser — files are never uploaded anywhere` },
+          { title: 'Batch support', description: `convert multiple ${from} files to ${to} in one pass and download them together as a ZIP` },
           { title: 'No signup required', description: 'use the tool immediately without an account or email' },
-          { title: 'Free, with no hidden limits', description: 'no watermarks, no forced quality caps' },
+          { title: 'Free, with no hidden limits', description: `no watermarks, no forced quality caps on your ${to} output` },
         ]}
         faqs={faqs}
         relatedTools={[

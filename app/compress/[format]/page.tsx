@@ -5,6 +5,7 @@ import CompressorPreset from '@/components/CompressorPreset';
 import ToolSEOContent, { type ToolFAQ, type ToolSEOData } from '@/components/ToolSEOContent';
 import LocalizedToolSEO from '@/components/LocalizedToolSEO';
 import SchemaMarkup from '@/components/SchemaMarkup';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import { Locale } from '@/lib/i18n';
 import ImageHero from './ImageHero';
 import {
@@ -266,16 +267,32 @@ export default async function CompressPage({ params }: Props) {
   const label = isGeneric ? 'image' : route!.label;
   const pageUrl = `https://pixvert-one.vercel.app/compress/${format}`;
 
-  const faqs: ToolFAQ[] = [
-    ...(FORMAT_FAQS[format] ?? FORMAT_FAQS['image']),
-    { question: 'Is it safe to compress my images here?', answer: 'Yes. Everything happens locally in your browser using the Canvas API — your files are never uploaded to a server.' },
-    { question: 'Is there a file size limit?', answer: 'There is no hard limit set by Pixvert, but very large files depend on your device’s available memory to process smoothly.' },
-    { question: 'Can I compress multiple files at once?', answer: 'Yes, drop several files at once and click Compress All — every file is processed and can be downloaded individually or as a ZIP.' },
-    { question: 'Can I use the compressed images commercially?', answer: 'Yes, Pixvert only reduces file size — it does not alter your rights over the image or add any watermark.' },
-  ];
+  const faqs: ToolFAQ[] = isGeneric
+    ? [
+        ...(FORMAT_FAQS[format] ?? FORMAT_FAQS['image']),
+        { question: 'Is it safe to compress my images here?', answer: 'Yes. Everything happens locally in your browser using the Canvas API — your files are never uploaded to a server.' },
+        { question: 'Is there a file size limit?', answer: 'There is no hard limit set by Pixvert, but very large files depend on your device’s available memory to process smoothly.' },
+        { question: 'Can I compress multiple files at once?', answer: 'Yes, drop several files at once and click Compress All — every file is processed and can be downloaded individually or as a ZIP.' },
+        { question: 'Can I use the compressed images commercially?', answer: 'Yes, Pixvert only reduces file size — it does not alter your rights over the image or add any watermark.' },
+      ]
+    : [
+        ...(FORMAT_FAQS[format] ?? FORMAT_FAQS['image']),
+        { question: `Is it safe to compress ${label} files here?`, answer: `Yes. Compressing your ${label} files happens locally in your browser using the Canvas API — nothing is uploaded to a server.` },
+        { question: `Is there a size limit for ${label} uploads?`, answer: `There's no hard limit set by Pixvert for ${label} files, but very large files depend on your device's available memory to process smoothly.` },
+        { question: `Can I compress several ${label} files at once?`, answer: `Yes, drop several ${label} files at once and click Compress All — each one is processed and can be downloaded individually or as a ZIP.` },
+        { question: `Can I use the compressed ${label} files commercially?`, answer: `Yes, Pixvert only reduces the file size of your ${label} files — it doesn't alter your rights over the image or add a watermark.` },
+      ];
 
   return (
     <div className="max-w-3xl mx-auto w-full px-4 py-10">
+      <Breadcrumbs
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'Tools', href: '/tools' },
+          { label: isGeneric ? 'Compress Image' : `Compress ${route.label}` },
+        ]}
+      />
+
       {isGeneric ? (
         <ImageHero />
       ) : (
@@ -339,10 +356,10 @@ export default async function CompressPage({ params }: Props) {
           ]}
           whyHeading={`Why use Pixvert to compress ${label}?`}
           whyReasons={[
-            { title: '100% local processing', description: 'compression happens entirely in your browser — files are never uploaded anywhere' },
-            { title: 'Batch support', description: 'compress multiple files in one pass and download them together as a ZIP' },
+            { title: '100% local processing', description: `${label} compression happens entirely in your browser — files are never uploaded anywhere` },
+            { title: 'Batch support', description: `compress multiple ${label} files in one pass and download them together as a ZIP` },
             { title: 'No signup required', description: 'use the tool immediately without an account or email' },
-            { title: 'Free, with no hidden limits', description: 'no watermarks, no forced quality caps' },
+            { title: 'Free, with no hidden limits', description: `no watermarks, no forced quality caps on your ${label} output` },
           ]}
           faqs={faqs}
           relatedTools={[
