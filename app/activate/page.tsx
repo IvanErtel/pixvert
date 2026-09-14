@@ -27,7 +27,7 @@ export default function ActivatePage() {
     setLoading(false);
 
     if (data.success) {
-      activate(email.trim());
+      activate(email.trim(), data.ownerToken);
       router.push('/');
     } else if (data.pin_required) {
       setShowPin(true);

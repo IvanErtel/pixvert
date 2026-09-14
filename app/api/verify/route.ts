@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
+import { verifyOwnerToken } from '@/lib/ownerToken';
 
 export async function POST(req: NextRequest) {
   try {
-    const { email } = await req.json();
+    const { email, ownerToken } = await req.json();
     if (!email || typeof email !== 'string') return NextResponse.json({ pro: false });
 
-    // Owner bypass — always Pro
-    if (email.toLowerCase() === process.env.OWNER_EMAIL?.toLowerCase()) {
+    // Owner bypass — requires the signed token issued by /api/activate after
+    // a correct PIN check, not just a matching email (see lib/ownerToken.ts).
+    if (email.toLowerCase() === process.env.OWNER_EMAIL?.toLowerCase() && verifyOwnerToken(email, ownerToken)) {
       return NextResponse.json({ pro: true, plan: 'pro' });
     }
 

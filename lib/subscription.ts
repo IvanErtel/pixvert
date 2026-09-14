@@ -12,7 +12,7 @@ export interface SubscriptionState {
 }
 
 export interface SubscriptionContextValue extends SubscriptionState {
-  activate: (email: string) => void;
+  activate: (email: string, ownerToken?: string) => void;
   clear: () => void;
 }
 

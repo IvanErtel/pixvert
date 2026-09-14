@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
+import { signOwnerToken } from '@/lib/ownerToken';
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,7 +18,7 @@ export async function POST(req: NextRequest) {
       if (pin !== process.env.OWNER_PIN) {
         return NextResponse.json({ success: false, error: 'invalid_pin' });
       }
-      return NextResponse.json({ success: true, plan: 'pro' });
+      return NextResponse.json({ success: true, plan: 'pro', ownerToken: signOwnerToken(normalizedEmail) });
     }
 
     const customers = await stripe.customers.list({ email: normalizedEmail, limit: 1 });
