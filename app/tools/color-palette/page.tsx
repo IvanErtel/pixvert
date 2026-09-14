@@ -4,10 +4,10 @@ import ToolSEOContent, { type ToolSEOData } from '@/components/ToolSEOContent';
 import SchemaMarkup from '@/components/SchemaMarkup';
 
 export const metadata: Metadata = {
-  title: 'Color Palette Generator Online Free — Pixvert',
+  title: 'Color Palette Generator From One Color — Free | Pixvert',
   description:
-    'Generate harmonious color palettes from any base color. Complementary, triadic, analogous, split-complementary, and shades. Free and instant.',
-  openGraph: { title: 'Color Palette Generator — Pixvert', type: 'website' },
+    'Generate a color palette from a single HEX color: complementary, triadic, analogous, split-complementary, and shades. Free, instant, ready-to-copy HEX codes.',
+  openGraph: { title: 'Color Palette Generator From One Color — Pixvert', type: 'website' },
   alternates: {
     canonical: '/tools/color-palette',
   },
@@ -43,6 +43,7 @@ const seo: ToolSEOData = {
     { title: 'Free, no signup', description: 'generate as many palettes as you need' },
   ],
   faqs: [
+    { question: 'How do I generate a color palette from just one color?', answer: 'Enter or pick a single HEX color as your base, then choose a harmony type (complementary, triadic, analogous, split-complementary, or shades) — the tool calculates the rest of the palette from that one color using HSL color wheel math, no design experience needed.' },
     { question: 'What is a complementary color scheme?', answer: 'Complementary colors sit directly opposite each other on the color wheel, creating high contrast — commonly used for calls to action that need to stand out.' },
     { question: 'What is the difference between analogous and triadic schemes?', answer: 'Analogous colors sit next to each other on the wheel, producing a harmonious, low-contrast look. Triadic colors are evenly spaced (120° apart), giving a vibrant but balanced palette.' },
     { question: 'Is my color data sent to a server?', answer: 'No, the palette is computed entirely in your browser from the base color you choose. Nothing is transmitted.' },
