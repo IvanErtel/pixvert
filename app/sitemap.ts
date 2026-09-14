@@ -73,7 +73,33 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
     changeFrequency: 'monthly',
     priority: path.startsWith('/compress') ? 0.8 : 0.7,
+    ...(path === '/tools/salary-calculator'
+      ? {
+          alternates: {
+            languages: {
+              en: `${BASE_URL}/tools/salary-calculator`,
+              es: `${BASE_URL}/es/tools/salary-calculator`,
+            },
+          },
+        }
+      : {}),
   }));
+
+  // Localized tool pages (SSR'd in a language other than English) — pilot: salary-calculator/es
+  const localizedToolRoutes: MetadataRoute.Sitemap = [
+    {
+      url: `${BASE_URL}/es/tools/salary-calculator`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+      alternates: {
+        languages: {
+          en: `${BASE_URL}/tools/salary-calculator`,
+          es: `${BASE_URL}/es/tools/salary-calculator`,
+        },
+      },
+    },
+  ];
 
   const conversionRoutes: MetadataRoute.Sitemap = SEO_CONVERSIONS.map((c) => ({
     url: `${BASE_URL}/convert/${c.slug}`,
@@ -91,5 +117,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     }));
 
-  return [...staticRoutes, ...toolRoutes, ...conversionRoutes, ...compressRoutes];
+  return [...staticRoutes, ...toolRoutes, ...localizedToolRoutes, ...conversionRoutes, ...compressRoutes];
 }
