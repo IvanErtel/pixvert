@@ -61,6 +61,14 @@ const TOOL_ROUTES = [
   '/tools/excel-to-csv',
 ];
 
+// /tools/* paths that also have a real, SSR'd /es/tools/* counterpart (see app/es/tools/*).
+// Add to this list as more localized tool pages are built out.
+const LOCALIZED_TOOLS = [
+  '/tools/salary-calculator',
+  '/tools/vat-calculator',
+  '/tools/mortgage-calculator',
+];
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: BASE_URL,              lastModified: new Date(), changeFrequency: 'weekly',  priority: 1   },
@@ -73,33 +81,31 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
     changeFrequency: 'monthly',
     priority: path.startsWith('/compress') ? 0.8 : 0.7,
-    ...(path === '/tools/salary-calculator'
+    ...(LOCALIZED_TOOLS.includes(path)
       ? {
           alternates: {
             languages: {
-              en: `${BASE_URL}/tools/salary-calculator`,
-              es: `${BASE_URL}/es/tools/salary-calculator`,
+              en: `${BASE_URL}${path}`,
+              es: `${BASE_URL}/es${path}`,
             },
           },
         }
       : {}),
   }));
 
-  // Localized tool pages (SSR'd in a language other than English) — pilot: salary-calculator/es
-  const localizedToolRoutes: MetadataRoute.Sitemap = [
-    {
-      url: `${BASE_URL}/es/tools/salary-calculator`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-      alternates: {
-        languages: {
-          en: `${BASE_URL}/tools/salary-calculator`,
-          es: `${BASE_URL}/es/tools/salary-calculator`,
-        },
+  // Localized tool pages (SSR'd in a language other than English)
+  const localizedToolRoutes: MetadataRoute.Sitemap = LOCALIZED_TOOLS.map((path) => ({
+    url: `${BASE_URL}/es${path}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.7,
+    alternates: {
+      languages: {
+        en: `${BASE_URL}${path}`,
+        es: `${BASE_URL}/es${path}`,
       },
     },
-  ];
+  }));
 
   const conversionRoutes: MetadataRoute.Sitemap = SEO_CONVERSIONS.map((c) => ({
     url: `${BASE_URL}/convert/${c.slug}`,
